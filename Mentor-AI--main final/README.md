@@ -1,6 +1,6 @@
 # IMentor AI: Ai Driven Intelligent Tutoring system using MultiLLM, Rag, and Knowledge Graphs
 
-This is my final year project, a comprehensive AI-powered tutoring application designed to assist users through interactive chat, document analysis, knowledge exploration, and smart learning tools. It integrates multiple Large Language Models (LLMs), Retrieval Augmented Generation (RAG) for contextual understanding from user-uploaded documents, and knowledge graph capabilities for critical thinking. The system also includes an admin interface for managing shared knowledge resources.
+This  comprehensive AI-powered tutoring application designed to assist users through interactive chat, document analysis, knowledge exploration, and smart learning tools. It integrates multiple Large Language Models (LLMs), Retrieval Augmented Generation (RAG) for contextual understanding from user-uploaded documents, and knowledge graph capabilities for critical thinking. The system also includes an admin interface for managing shared knowledge resources.
 
 **Project Repository:** https://github.com/durgamangena41/imentor-ai-final-year
 
