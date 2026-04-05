@@ -1,6 +1,16 @@
-# AI Tutor: Intelligent Learning Assistant
+# IMentor AI: Ai Driven Intelligent Tutoring system using MultiLLM, Rag, and Knowledge Graphs
 
-This project is a comprehensive AI-powered tutoring application designed to assist users through interactive chat, document analysis, and knowledge exploration. It integrates multiple Large Language Models (LLMs), Retrieval Augmented Generation (RAG) for contextual understanding from user-uploaded documents, and knowledge graph capabilities for critical thinking. The system also includes an admin interface for managing shared knowledge resources.
+This is my final year project, a comprehensive AI-powered tutoring application designed to assist users through interactive chat, document analysis, knowledge exploration, and smart learning tools. It integrates multiple Large Language Models (LLMs), Retrieval Augmented Generation (RAG) for contextual understanding from user-uploaded documents, and knowledge graph capabilities for critical thinking. The system also includes an admin interface for managing shared knowledge resources.
+
+**Project Repository:** https://github.com/durgamangena41/imentor-ai-final-year
+
+### Current Added Features
+
+-   **Smart Focus Tracker**: Helps students manage study sessions with timers, pauses, summaries, and session tracking.
+-   **Wellness Challenges**: Daily wellness tasks with streak tracking, XP, goals, and progress insights.
+-   **Smart Notepad + Calendar**: Rich note editing, calendar-based tasks, reminders, and printable note/export support.
+-   **Adaptive Challenges**: Smart quiz generation, topic-based retries, and weak-area recommendations.
+-   **Improved Learning Analytics**: Streaks, progress indicators, topic trends, and personalized learning insights.
 
 ---
 
@@ -234,13 +244,13 @@ Follow the exact process to deploy this application in the Local Area Network
 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Karthi-k235/Nit.git
+git clone https://github.com/durgamangena41/imentor-ai-final-year.git
 ```
 
-2. Move to Nit folder
+2. Move to project folder
 
 ```bash
-cd Nit
+cd imentor-ai-final-year
 ```
 
 3. Run install.sh script file
@@ -447,8 +457,8 @@ For Windows, dependencies must be installed individually. Using a package manage
 #### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/NIT-Andhra-AI/iMentor-Team3.git
-cd iMentor-Team3
+git clone https://github.com/durgamangena41/imentor-ai-final-year.git
+cd imentor-ai-final-year
 ```
 
 #### 2. Configure Environment Variables
@@ -561,23 +571,6 @@ The application stack includes a full suite of monitoring tools. Access them via
 -   **Qdrant UI**: `http://localhost:2003/dashboard` (Inspect vector database collections)
 -   **Neo4j Browser**: `http://localhost:2004` (Query and visualize the knowledge graph)
 
----
-
-## Contributors
-
-### Team Members & Contributions
-
-| Name | GitHub | Key Contributions |
-|------|--------|-------------------|
-| **P Sai Karthik** | [@Karthi-k235](https://github.com/Karthi-k235) | • PDF element extraction (text, tables, images, scanned documents) <br>• Prompt templates for document analysis (FAQ, topics, mindmap) <br>•Handling Of Graphs In Neo4j <br>• Comprehensive skill tree system for tutor (modules, topics, subtopics, mastery tracking) <br>• First Socratic Loop implementation <br>• Knowledge Graph generation service |
-| **A R S L Hari Priya** | [@HariPriya-2124](https://github.com/HariPriya-2124) | • RAG system with Qdrant vector database integration <br>• Syllabus linking and query services <br>• Analytics API development <br>• Syllabus Graph handling <br> • User profile and orchestrator status endpoints <br>• Neo4j configuration for knowledge graph integration |
-| **S Tejaswini** | [@Tejaswini-1906](https://github.com/Tejaswini-1906) | • AI tutor system prompt generation <br>• Comprehensive frontend API service <br>• Implementation of the Second Iteration of Socratic Loop with working mode <br>• Python RAG service configuration <br>• Admin management routes <br>|
-| **S Swarna Sri** | [@swarna49](https://github.com/swarna49) | • StudentKnowledgeState Mongoose model configuration <br>• Contextual memory system integration <br>• Integration of Context memeory to tutor <br>• UI/UX improvements and tweaks |
-| **P Nithin** | [@Nithin974](https://github.com/Nithin974) | • Gamification bounty questions system <br>• Bloom's Taxonomy Scoring Engine <br>• Bounty Question System implementation <br>• Gamification system (skill trees, boss battles, bounty credits) <br>• Admin gamification Dashboard |
-| **M Tejaswin** | [@Teja-9703](https://github.com/Teja-9703) | • Frontend API service enhancements <br>• Admin Gamification Dashboard APIs (XP awarding, skill tree CRUD, skill battles, contributions management) <br>• Implementation of skill tree mechanics  <br>• File upload and knowledge source management |
-| **M Lilly Sri** | [@Lillysri02](https://github.com/Lillysri02) | • Testing & Quality Assurance <br>• Documentation support <br>• Assisted in resolving merge conflicts |
-
----
 
 ## Demo Video
 
