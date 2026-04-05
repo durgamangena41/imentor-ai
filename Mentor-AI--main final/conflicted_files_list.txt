@@ -1,0 +1,6 @@
+server\.env
+server\routes\admin.js
+server\routes\geminiService.js
+server\server.js
+server\services\gamificationService.js
+server\services\ollamaService.js

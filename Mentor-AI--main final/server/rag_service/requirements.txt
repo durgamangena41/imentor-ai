@@ -1,0 +1,76 @@
+# -- Core Web & API Frameworks --
+flask>=3.0.0
+requests
+python-dotenv
+Werkzeug>=3.0.0
+aiohttp
+python-json-logger
+prometheus-flask-exporter
+sentry-sdk
+
+# -- LangChain --
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-community>=0.3.0
+langchain-text-splitters>=0.3.0
+
+# -- AI & LLM SDKs --
+google-generativeai
+ollama
+openai
+openai-whisper
+
+# -- Vector & Graph Databases --
+qdrant-client>=1.12.0
+neo4j>=5.25.0
+
+# -- Core ML/AI Block (PyTorch 2.4+ for Py3.12) --
+torch
+torchaudio
+torchvision
+transformers>=4.45.0
+accelerate>=1.0.0
+bitsandbytes>=0.44.0
+datasets>=3.0.0
+sentence-transformers>=3.1.0
+peft>=0.13.0
+trl>=0.11.0
+protobuf
+sentencepiece
+
+# -- Text-to-Speech (Replacement for Coqui) --
+# SpeechT5 dependencies are covered by transformers/torch/datasets
+librosa
+soundfile
+
+# -- Foundational Data Science Libraries --
+pandas
+numpy>=1.26.0
+scipy
+
+# -- Document & Data Processing --
+pypdf
+python-docx
+python-pptx
+pdfplumber
+pymupdf
+Pillow
+pytesseract
+spacy>=3.7.0
+# Note: After install, run: python -m spacy download en_core_web_sm
+
+# -- Web Scraping & Media --
+beautifulsoup4
+playwright
+yt-dlp
+moviepy
+pydub
+SpeechRecognition
+
+# -- Utilities --
+uuid
+nltk
+reportlab
+gTTS
+textstat
+duckduckgo-search>=6.0.0

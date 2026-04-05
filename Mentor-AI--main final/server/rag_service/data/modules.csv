@@ -1,0 +1,5 @@
+module_id,module_name,order
+mod_intro,Introduction to Machine Learning,1
+mod_supervised,Supervised Learning,2
+mod_unsupervised,Unsupervised Learning,3
+mod_deep,Deep Learning,4

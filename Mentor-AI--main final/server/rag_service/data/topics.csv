@@ -1,0 +1,10 @@
+topic_id,topic_name,module_id
+topic_ml_basics,What is Machine Learning,mod_intro
+topic_types_ml,Types of ML,mod_intro
+topic_linear_reg,Linear Regression,mod_supervised
+topic_logistic_reg,Logistic Regression,mod_supervised
+topic_decision_trees,Decision Trees,mod_supervised
+topic_clustering,Clustering Algorithms,mod_unsupervised
+topic_pca,Principal Component Analysis,mod_unsupervised
+topic_neural_nets,Neural Networks,mod_deep
+topic_cnn,Convolutional Neural Networks,mod_deep

@@ -1,0 +1,57 @@
+[
+  {
+    "question": "What is the primary purpose of the `font-display: optional` CSS descriptor, specifically in the context of optimizing the Critical Rendering Path (CRP) and mitigating Cumulative Layout Shift (CLS)?",
+    "options": [
+      "Tells the browser to only use the custom font if it is already available in the cache, avoiding a network request and subsequent layout shift.",
+      "Ensures the font is loaded synchronously before any text is rendered, preventing FOUT (Flash of Unstyled Text).",
+      "Forces the browser to use a local system font immediately, regardless of whether the custom font has loaded.",
+      "Allows the font to be swapped out after a very long timeout (e.g., 30 seconds), guaranteeing the custom font will eventually appear."
+    ],
+    "correctIndex": 0,
+    "explanation": "The `font-display: optional` value is the most aggressive for performance and CLS mitigation. It gives the custom font an extremely short block period (usually 100ms) and zero swap period. If the font isn't already available (cached), the browser defaults permanently to the fallback font for that page load, completely eliminating the network request and the layout shift that would occur when the custom font eventually loaded."
+  },
+  {
+    "question": "HTTP/3 fundamentally breaks with previous HTTP versions by abandoning TCP. What is the name of the transport layer protocol it utilizes, which is based on UDP and designed to mitigate the 'Head-of-Line Blocking' issue inherent to TCP streams?",
+    "options": [
+      "SPDY",
+      "SCTP (Stream Control Transmission Protocol)",
+      "QUIC (Quick UDP Internet Connections)",
+      "TLS 1.3"
+    ],
+    "correctIndex": 2,
+    "explanation": "HTTP/3 uses QUIC (Quick UDP Internet Connections) as its underlying transport layer. QUIC runs over UDP and incorporates stream multiplexing, allowing individual streams to be delivered independently. This prevents congestion or packet loss on one stream from blocking the processing of unrelated streams, solving the major Head-of-Line Blocking problem seen in HTTP/1 and HTTP/2 over TCP."
+  },
+  {
+    "question": "In the V8 JavaScript engine's garbage collection strategy, which specific memory space is designated for very young, short-lived objects and is primarily managed by the fast 'Scavenger' (minor GC) algorithm?",
+    "options": [
+      "The Old Space",
+      "The New Space (or Young Generation)",
+      "The Large Object Space",
+      "The Code Space"
+    ],
+    "correctIndex": 1,
+    "explanation": "V8 uses a generational garbage collector. The 'New Space' (or Young Generation) is where most newly allocated objects reside. Since most objects are short-lived, the Scavenger algorithm (a fast, copying collector) frequently cleans this space. Objects that survive multiple Scavenger cycles are promoted to the 'Old Space' (managed by the slower Mark-Sweep-Compact collector)."
+  },
+  {
+    "question": "When a browser initiates a CORS preflight request (using the `OPTIONS` method) to determine if a cross-origin request is safe, which HTTP response header from the server is strictly required to indicate which HTTP methods the server permits for the actual request?",
+    "options": [
+      "`Access-Control-Allow-Origin`",
+      "`Access-Control-Expose-Headers`",
+      "`Access-Control-Allow-Methods`",
+      "`Access-Control-Max-Age`"
+    ],
+    "correctIndex": 2,
+    "explanation": "The preflight request asks the server what methods and headers are permitted. The server must respond with the `Access-Control-Allow-Methods` header, which explicitly lists the methods (e.g., GET, POST, DELETE) that the client is allowed to use for the subsequent cross-origin request. `Access-Control-Allow-Origin` is also required, but `...Allow-Methods` specifically addresses the methods check in the preflight."
+  },
+  {
+    "question": "What is the modern architectural pattern that involves deploying application logic (often small, stateless functions) directly onto CDN points of presence (POPs) or within network edge locations, primarily aimed at reducing latency and improving responsiveness globally?",
+    "options": [
+      "Microservices Architecture",
+      "Server-Side Rendering (SSR)",
+      "Event Sourcing",
+      "Edge Computing / Edge Functions"
+    ],
+    "correctIndex": 3,
+    "explanation": "Edge Computing (or Edge Functions, like AWS Lambda@Edge or Cloudflare Workers) refers to the practice of pushing application logic and data processing away from a centralized cloud region and closer to the end-users (at the network edge). This drastically reduces the physical distance data must travel, leading to much lower latency for tasks like authentication, routing, and content personalization."
+  }
+]

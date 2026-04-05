@@ -1,0 +1,16 @@
+{
+  "name": "AI Tutor - Gamified Learning Platform",
+  "short_name": "AI Tutor",
+  "description": "An intelligent tutoring platform with gamification features",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#8b5cf6",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+[33m942b322[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Merge Team-6 features and resolve conflicts
+[33m1277901[m[33m ([m[1;31morigin/Team-6-Gamification-Bounty-Features[m[33m)[m feat: Introduce a new `ToolsModal` component and integrate it into the `TopNav`.
+[33m0e9f330[m Initial commit
+[33m67c0212[m Improve prompt engineering to prevent question truncation.
+[33m9430b03[m feat: implement Assessment Engine with strict quiz generation and Bridge Prompts
+[33m4d33bc5[m feat: implement Assessment Engine with strict quiz generation and Bridge Prompts
+[33mc2aa75b[m feat: Landing page update
+[33mdcc6f5e[m Fix syntax errors in promptTemplates.js caused by merge conflicts
+[33m049b863[m Fix merge conflicts in chat.js
+[33m70d6d6a[m Merge remote changes with local updates
+[33mb5c036b[m Update learning profile features and fix scrollbar issues
+[33mb37c4d7[m feat : Badge Animations
+[33me74acde[m Delete socratic_tutor_references directory
+[33m355c7c5[m Merge branch 'main' of https://github.com/NIT-Andhra-AI/iMentor-Team3
+[33mfc8558c[m feat: Mobile Resposiveness
+[33ma26b6d9[m Merge branch 'main' of https://github.com/NIT-Andhra-AI/iMentor-Team3
+[33m31ec257[m socraticTutor-skill_tree_credits-
+[33m6f984b9[m Home Page Update
+[33m63b8387[m Home Page
+[33m9e2e955[m socratic_tutor
+[33me478fea[m Commit
+[33m6cceeef[m changes-profile of gamefication
+[33maca0ef0[m rectifying errors-curriculum_graph-socratic_tutor_mode
+[33m78c2a3d[m Merge branch 'main' of https://github.com/NIT-Andhra-AI/iMentor-Team3
+[33m0bf2293[m changes-boss battle-gamification
+[33m9e0bb2c[m addons
+[33mca053ad[m Updates
+[33m2638605[m ..addons
+[33m1412884[m Tweeks and Improvements
+[33m4d6d580[m updated install.sh
+[33ma74c10d[m feat: Implement ChallengesPage for gamified learning, including challenge display, quiz generation, and mastery reports, and update README with a new contributor and demo link.
+[33m84699f5[m feat: Introduce gamification features including challenges, quizzes, and mastery reports, alongside new chat routes.
+[33m3159769[m changes in the central page and neo4j -qudrant bridger
+[33m90a6f6e[m updates in readme file
+[33m1c012c5[m small updates in readme
+[33m385fcee[m Merge branch 'main' of https://github.com/NIT-Andhra-AI/iMentor-Team3
+[33mfb9abd7[m Demo video Uploded
+[33m62dccb0[m Update README.md
+[33mcb169ad[m feat : updae on readme and  gamification files
+[33mc3f379b[m feat: Implement gamification skill tree with assessment functionality and API integration.
+[33mc975e1a[m Merge branch 'main' of https://github.com/NIT-Andhra-AI/iMentor-Team3
+[33m237ac56[m Doc Updation
+[33m8eba85c[m Update README.md
+[33m2d90fef[m Update README.md
+[33md6b8120[m feat:Updated Documenation
+[33mbce9ff0[m feat: Add detailed walkthroughs for tutor mode, chat UI, study plans, and curriculum graph, and update the main README with descriptions for the curriculum knowledge graph, Socratic tutor mode, and gamification system.
+[33m1ec5e83[m feat: Introduce AI tutor system prompt generation and a comprehensive frontend API service.
+[33m2b575f4[m feat: Add StudentKnowledgeState Mongoose model and Neo4j configuration for knowledge graph integration.
+[33ma4f509f[m feat: Implement RAG system with Qdrant vector database integration, syllabus linking, query services, and analytics API.
+[33m13ba131[m feat: implement rPDF element extraction including text, tables, and images with scanned document heuristics. ie Pre qudrant mapping stages
+[33m1d1869e[m Integrated contextual memory system
+[33m482d318[m feat: Add prompt templates for document analysis (FAQ, topics, mindmap) and knowledge graph generation, and introduce a new socratic tutor service.
+[33m8329b53[m Merge pull request #1 from NIT-Andhra-AI/dev/hemanth
+[33me9280d1[m docs: add hemanth contributions to readme
+[33mfff7cbe[m feat: Add comprehensive gamification system including skill trees, boss battles, and bounty credits.
+[33ma3f78c1[m feat: Implement gamification features including challenges, quizzes, user scoring, and supporting backend services.
+[33m04763a1[m feat: Add Python RAG service configuration, admin management routes, and a socratic tutor service.
+[33mb0e4147[m feat: Implement a comprehensive skill tree system including learning modules, topics, subtopics, mastery tracking, assessments, and initial RAG service setup.
+[33m2ac9606[m Merge branch 'main' of https://github.com/NIT-Andhra-AI/iMentor-Team3
+[33m3ecf71a[m gamification-bounty questions system
+[33ma8a3e78[m Minor Ui Tweeks
+[33m5f87951[m Merge branch 'main' of https://github.com/NIT-Andhra-AI/iMentor-Team3
+[33mef9f923[m gamification-Bloom's Taxonomy Scoring Engine-Bounty Question System
+[33mba16dd8[m Merge branch 'main' of https://github.com/NIT-Andhra-AI/iMentor-Team3
+[33m90adcaa[m Syllabus Graph Handiling
+[33m3190080[m Merge branch 'main' of https://github.com/NIT-Andhra-AI/iMentor-Team3
+[33m0fea213[m documents
+[33m022a602[m Merge branch 'main' of https://github.com/NIT-Andhra-AI/iMentor-Team3
+[33mfd39bad[m gamification-Bloom's Taxonomy Scoring Engine-Bounty Question System
+[33m14f9daf[m gamification-Bloom's Taxonomy Scoring Engine
+[33mb4a2f5d[m Implenatation of the first Socratic Loop
+[33ma0a6302[m feat: Implement Knowledge Graph extraction, a comprehensive tool registry including web, RAG, KG, academic search, document generation, and gamification, alongside Gemini LLM integration.
+[33mc156057[m feat: Introduce knowledge graph extraction, a comprehensive tool registry with new search and action tools, gamification features, and Gemini LLM integration.
+[33m1d3bc77[m feat: set up initial backend server with email credential check and frontend API service.
+[33mc65242a[m feat: Implement a comprehensive gamification system including Bloom's Taxonomy-based query scoring, user cognitive profiles, bounties, and dedicated frontend pages for skill trees and analytics.
+[33m41560a2[m feat: Create the main backend server entry point, configuring Express, API routes, and core services.
+[33m5957a9d[m feat: Introduce Redis client configuration and connection, and add an email credential check during server initialization.
+[33mf76f836[m Add gamification system with challenges and leaderboard
+[33m0858c0d[m chore: Update project files
+[33m64751b9[m security: Update .gitignore to exclude sensitive files
+[33mec2dd2c[m install.sh modified
+[33m862f4e3[m updated gitignore
+[33me4c3541[m OTP
+[33mbe0586a[m Admin console
+[33mf695a66[m Update ExternalServicesNav.jsx
+[33mb281fc9[m Update README.md
+[33mb4e8c24[m readme updated
+[33m3a074d3[m Updated
+[33m065b065[m install.sh & ports configured to 2000 series & security issues resolved for copy funtionalities
+[33mb3eae76[m Final Commit
+[33m44ca6ea[m .
+[33ma4d6526[m Add files via upload
+[33m16c09a6[m Add files via upload
+[33m73fe86e[m docs: Update and finalize project README
+[33m5b69fa3[m docs: Add Architecture folder with project documentation
+[33m1f64d00[m docs: Create final comprehensive project README
+[33m0d20c12[m refactor: Clean up root directory and organize context files
+[33mea5dd2f[m chore: Finalize unified startup and .gitignore
+[33m0ee2830[m feat: Add Notebook service and configure gitignore
+[33m4c18b88[m feat: Integrate Voice I/O with STT and TTS
+[33m5b9e801[m feat(devops): Finalize automated startup with concurrently and README
+[33mf3ae50e[m feat(devops): Add automated setup and startup scripts
+[33m7d8abd4[m refactor(startup): Replace Termex with Concurrently for reliability
+[33me39f30c[m feat(search): Implement DuckDuckGo search via Python microservice
+[33md9e275e[m docs: Update README with final polished version
+[33m1718522[m docs: Update README with repository URL
+[33m579fe54[m Initial commit: Add complete project structure and setup instructions

@@ -1,0 +1,10 @@
+subtopic_id,subtopic_name,topic_id
+sub_math_basics,Basic Mathematics,topic_linear_reg
+sub_stats,Statistics Fundamentals,topic_linear_reg
+sub_probability,Probability Theory,topic_logistic_reg
+sub_linear_algebra,Linear Algebra,topic_pca
+sub_calculus,Calculus,topic_neural_nets
+sub_linear_reg_prereq,Linear Regression Concepts,topic_logistic_reg
+sub_supervised_basics,Supervised Learning Basics,topic_decision_trees
+sub_clustering_basics,Clustering Fundamentals,topic_pca
+sub_neural_basics,Neural Network Basics,topic_cnn

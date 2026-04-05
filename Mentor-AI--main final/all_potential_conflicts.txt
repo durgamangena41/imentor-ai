@@ -1,0 +1,13 @@
+install.sh
+server\.env
+server\Cpurses\Machine_Learning\R8.pdf
+server\rag_service\ai_core.py
+server\rag_service\app.py
+server\rag_service\course_pipeline.py
+server\rag_service\curriculum_graph_handler.py
+server\rag_service\prompts.py
+server\routes\admin.js
+server\routes\geminiService.js
+server\server.js
+server\services\gamificationService.js
+server\services\ollamaService.js

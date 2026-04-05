@@ -1,0 +1,255 @@
+﻿
+> frontend@0.0.0 lint
+> eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0
+
+
+D:\NIT intern\iMentor-Team3\frontend\src\App.jsx
+  22:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\admin\AdminInsights.jsx
+  5:44  error  'Icon' is defined but never used  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\admin\AnalyticsKpiCard.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  5:49  error  'Icon' is defined but never used                                               no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\admin\DatasetManager.jsx
+  10:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\admin\ModelFeedbackStats.jsx
+  21:22  error  'error' is defined but never used  no-unused-vars
+  60:18  error  'err' is defined but never used    no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\admin\TutorModeInsights.jsx
+  11:44  error  'Icon' is defined but never used  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\admin\UserChatManager.jsx
+  11:14  error  'e' is defined but never used  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\analysis\AnalysisTool.jsx
+  1:38  error  'useCallback' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u       no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\analysis\AnalysisToolRunner.jsx
+  2:38  error  'useCallback' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u       no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\analysis\KnowledgeGraphViewer.jsx
+  2:17  error  'useEffect' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\analysis\MindmapViewer.jsx
+  3:8  error  'toast' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\analysis\PodcastGenerator.jsx
+  7:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\analysis\RightPanel.jsx
+  8:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\auth\AuthModal.jsx
+  11:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\chat\ChatHistory.jsx
+  5:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\chat\ChatHistoryModal.jsx
+   17:14  error  'e' is defined but never used                                                                        no-unused-vars
+   28:12  error  'error' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                no-unused-vars
+  114:11  error  'handleDeleteSession' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\chat\ChatInput.jsx
+   2:10  error  'useAppState' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  11:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u       no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\chat\MessageBubble.jsx
+    5:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  166:38  error  'Icon' is defined but never used                                               no-unused-vars
+  237:18  error  'error' is defined but never used                                              no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\chat\ThinkingDropdown.jsx
+  4:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\core\Modal.jsx
+   4:10  error    'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                    no-unused-vars
+  67:39  warning  The ref value 'modalRef.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'modalRef.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\documents\DocumentList.jsx
+  9:10  error  'useAuth' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\documents\DocumentUpload.jsx
+  9:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\documents\KnowledgeSourceList.jsx
+  26:14  error  'e' is defined but never used  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\documents\SourceIngestion.jsx
+  7:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\gamification\BossBattles.jsx
+    5:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+   14:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   80:31  error  't' is defined but never used                                                            no-unused-vars
+  120:39  error  't' is defined but never used                                                            no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\gamification\BountyCreditsPage.jsx
+    7:10  error    'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                 no-unused-vars
+   38:12  error    'submittingBounty' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u              no-unused-vars
+   38:30  error    'setSubmittingBounty' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u           no-unused-vars
+   47:8   warning  React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   94:23  error    't' is defined but never used                                                                                 no-unused-vars
+  134:11  error    'handleBountyComplete' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u          no-unused-vars
+  137:27  error    't' is defined but never used                                                                                 no-unused-vars
+  190:11  error    'getDifficultyColor' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\gamification\SkillAssessmentModal.jsx
+   2:10  error    'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                      no-unused-vars
+  18:8   warning  React Hook useEffect has a missing dependency: 'fetchQuestions'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\gamification\SkillTreeGameMap.jsx
+    2:10  error    'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                       no-unused-vars
+   22:12  error    'currentLevelIndex' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                   no-unused-vars
+   51:8   warning  React Hook useEffect has missing dependencies: 'generateLevels', 'navigate', and 'savedLevels'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+   66:8   warning  React Hook useEffect has missing dependencies: 'assessmentResult' and 'topic'. Either include them or remove the dependency array                   react-hooks/exhaustive-deps
+  172:38  error    'index' is defined but never used                                                                                                                   no-unused-vars
+  354:38  error    'total' is defined but never used                                                                                                                   no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\gamification\SkillTreeGames.jsx
+   2:10  error    'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                   no-unused-vars
+  32:8   warning  React Hook useEffect has a missing dependency: 'saveNewGame'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\gamification\SkillTreeLanding.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\gamification\SkillTreeMap.jsx
+    1:46  error  'useCallback' is defined but never used. Allowed unused vars must match /^[A-Z_]/u               no-unused-vars
+    2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                    no-unused-vars
+  139:11  error  'renderSkillTree' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\gamification\SkillTreeOverview.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                      no-unused-vars
+  9:12  error  'recentProgress' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  9:28  error  'setRecentProgress' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\gamification\XPProgressModal.jsx
+  18:45  error  'level' is defined but never used  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\landing\AudienceSection.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\landing\CtaSection.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\landing\FeaturesSection.jsx
+   3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  41:30  error  'Icon' is defined but never used                                               no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\landing\HeroSection.jsx
+  4:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\landing\HowItWorksSection.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\landing\LandingNav.jsx
+  5:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\layout\CenterPanel.jsx
+   11:10   error    'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                       no-unused-vars
+  109:148  error    'initialActivityForNewSession' is defined but never used                                                                                            no-unused-vars
+  109:178  error    'setInitialActivityForNewSession' is defined but never used                                                                                         no-unused-vars
+  125:12   error    'activeBountyMetadata' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                no-unused-vars
+  220:27   error    't' is defined but never used                                                                                                                       no-unused-vars
+  249:27   error    't' is defined but never used                                                                                                                       no-unused-vars
+  314:8    warning  React Hook useCallback has missing dependencies: 'activeBountyId' and 'handleBountyCompletion'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  390:8    warning  React Hook useCallback has a missing dependency: 'activeBountyId'. Either include it or remove the dependency array                                 react-hooks/exhaustive-deps
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\layout\LLMSelectionModal.jsx
+  10:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\layout\LeftCollapsedNav.jsx
+  6:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\layout\LeftPanel.jsx
+  12:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\layout\RightCollapsedNav.jsx
+  6:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\layout\RightPanel.jsx
+   8:8   error  'api' is defined but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  13:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  14:8   error  'toast' is defined but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\layout\TopNav.jsx
+  25:37  error  'tutorMode' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\learning\StudyPlanPage.jsx
+   11:10  error    'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                         no-unused-vars
+   21:39  error    'onModuleUpdate' is defined but never used                                                                            no-unused-vars
+   58:14  error    'newSessionId' is defined but never used                                                                              no-unused-vars
+  153:8   warning  React Hook useEffect has a missing dependency: 'location.pathname'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\onboarding\OnboardingCard.jsx
+   3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  27:11  error  'Icon' is defined but never used                                               no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\onboarding\OnboardingFlow.jsx
+    3:10  error    'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                    no-unused-vars
+   97:18  error    'error' is defined but never used                                                                                no-unused-vars
+  111:8   warning  React Hook useEffect has a missing dependency: 'handleFinish'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\onboarding\OnboardingProgress.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\onboarding\OnboardingVisual.jsx
+  4:35  error  'Icon' is defined but never used  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\profile\ProfileSettingsModal.jsx
+  106:11  error  'selectFieldStyledClass' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\tools\AIAssistantBot.jsx
+  4:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\tools\AcademicIntegrityPage.jsx
+    2:46  error  'useCallback' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   53:43  error  'monaco' is defined but never used                                                  no-unused-vars
+  102:22  error  'pollErr' is defined but never used                                                 no-unused-vars
+  133:28  error  'monaco' is not defined                                                             no-undef
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\tools\CodeEditorWrapper.jsx
+  4:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\tools\IntegrityReportPanel.jsx
+  8:33  error  'Icon' is defined but never used  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\tools\QuizGeneratorPage.jsx
+  10:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u          no-unused-vars
+  25:12  error  'error' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\components\tools\QuizInProgress.jsx
+  2:27  error  'useEffect' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  6:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\contexts\AppStateContext.jsx
+  3:14  warning  Fast refresh only works when a file only exports components. Move your React context(s) to a separate file                      react-refresh/only-export-components
+  5:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+D:\NIT intern\iMentor-Team3\frontend\src\contexts\AuthContext.jsx
+  6:14  warning  Fast refresh only works when a file only exports components. Move your React context(s) to a separate file  react-refresh/only-export-components
+
+D:\NIT intern\iMentor-Team3\frontend\src\hooks\useTextToSpeech.js
+  40:15  error  'handleEnd' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\hooks\useUserLevel.jsx
+  44:21  error  'process' is not defined  no-undef
+
+D:\NIT intern\iMentor-Team3\frontend\src\services\api.js
+  132:18  error  'e' is defined but never used  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\utils\helpers.js
+  32:9  error  'lastRan' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\NIT intern\iMentor-Team3\frontend\src\utils\markdownUtils.jsx
+  32:93  error  Unnecessary escape character: \$  no-useless-escape
+
+Γ£û 118 problems (105 errors, 13 warnings)
+

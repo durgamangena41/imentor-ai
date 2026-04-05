@@ -1,0 +1,237 @@
+// server/server.js
+const dotenv = require("dotenv");
+dotenv.config();
+
+require('./instrument.js');
+const { register, httpRequestDurationMicroseconds } = require('./utils/metrics');
+const Sentry = require("@sentry/node"); // Sentry must be required
+
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+const fs = require("fs");
+const axios = require("axios");
+const mongoose = require("mongoose");
+
+// --- Custom Modules & Middleware ---
+const connectDB = require("./config/db");
+const { getLocalIPs } = require("./utils/networkUtils");
+const { performAssetCleanup } = require("./utils/assetCleanup");
+const { authMiddleware } = require("./middleware/authMiddleware");
+const { adminAuthMiddleware } = require('./middleware/adminAuthMiddleware');
+const { connectRedis } = require("./config/redisClient");
+const { logger } = require('./utils/logger');
+const { checkEmailCredentials } = require('./services/emailService'); // <<< ADDED IMPORT
+
+logger.info('--- WINSTON LOGGER INITIALIZED IN SERVER.JS ---');
+
+// --- Route Imports ---
+const networkRoutes = require("./routes/network");
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/user");
+const chatRoutes = require("./routes/chat");
+const uploadRoutes = require("./routes/upload");
+const analysisRoutes = require("./routes/analysis");
+const adminMasterRouter = require('./routes/index');
+const subjectsRoutes = require("./routes/subjects");
+const generationRoutes = require("./routes/generationRoutes");
+const exportRoutes = require("./routes/export");
+const kgRoutes = require("./routes/kg");
+const llmConfigRoutes = require("./routes/llmConfig");
+const toolsRoutes = require("./routes/tools");
+const learningRoutes = require("./routes/learning");
+const learningPathRoutes = require("./routes/learningPath");
+const knowledgeSourceRoutes = require("./routes/knowledgeSource");
+const analyticsRoutes = require('./routes/analytics');
+const feedbackRoutes = require('./routes/feedback');
+const finetuningRoutes = require('./routes/finetuning');
+const gamificationRoutes = require('./routes/gamification');
+const focusRoutes = require('./routes/focus');
+const wellnessRoutes = require('./routes/wellness');
+const { notesRouter, todosRouter } = require('./routes/notes');
+const knowledgeStateRoutes = require('./routes/knowledgeState');
+const deepResearchRoutes = require('./routes/deepResearch');
+const { setupAdmin } = require('./scripts/setupAdmin');
+
+// --- Cron Jobs ---
+const { startBossBattleCleanup } = require('./jobs/bossBattleCleanup');
+const { startBossBattleGenerator } = require('./jobs/bossBattleGenerator');
+const { startBountyCleanup } = require('./jobs/bountyCleanup');
+const { startBountyGenerator } = require('./jobs/bountyGenerator');
+
+// --- Configuration & Express App Setup ---
+const port = process.env.PORT || 5001;
+const mongoUri = process.env.MONGO_URI;
+const pythonRagUrl = process.env.PYTHON_RAG_SERVICE_URL;
+
+if (!process.env.JWT_SECRET || !process.env.ENCRYPTION_SECRET) {
+  logger.error("!!! FATAL: JWT_SECRET or ENCRYPTION_SECRET is not set in .env file.");
+  process.exit(1);
+}
+if (!mongoUri) {
+  logger.error("!!! FATAL: MONGO_URI is not set in .env file.");
+  process.exit(1);
+}
+
+const app = express();
+app.use(cors());
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+app.use((req, res, next) => {
+  const end = httpRequestDurationMicroseconds.startTimer();
+  res.on('finish', () => {
+    end({ route: req.route?.path || req.path, code: res.statusCode, method: req.method });
+  });
+  next();
+});
+
+// --- API Route Mounting ---
+app.get("/", (req, res) => res.send("AI Tutor Backend API is running..."));
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
+
+// --- Public Routes (No Authentication Required) ---
+app.use("/api/network", networkRoutes);
+app.use("/api/auth", authRoutes);
+
+// --- Admin Routes (Uses its own adminAuthMiddleware) ---
+app.use('/api/admin/analytics', adminAuthMiddleware, analyticsRoutes);
+app.use('/api/admin/finetuning', adminAuthMiddleware, finetuningRoutes);
+app.use('/api/admin/gamification', adminAuthMiddleware, require('./routes/adminGamification'));
+app.use("/api/admin", adminAuthMiddleware, adminMasterRouter);
+
+// --- Protected User Routes (Requires standard authMiddleware) ---
+// The authMiddleware is now passed as the second argument, applying it specifically to these routers.
+app.use("/api/user", authMiddleware, userRoutes);
+app.use("/api/chat", authMiddleware, chatRoutes);
+app.use("/api/learning", authMiddleware, learningRoutes);
+app.use("/api/learning/paths", authMiddleware, learningPathRoutes);
+app.use("/api/upload", authMiddleware, uploadRoutes);
+app.use("/api/analysis", authMiddleware, analysisRoutes);
+app.use("/api/subjects", authMiddleware, subjectsRoutes);
+app.use("/api/generate", authMiddleware, generationRoutes);
+app.use("/api/export", authMiddleware, exportRoutes);
+app.use("/api/kg", authMiddleware, kgRoutes);
+app.use("/api/llm", authMiddleware, llmConfigRoutes);
+app.use("/api/tools", authMiddleware, toolsRoutes);
+app.use("/api/knowledge-sources", authMiddleware, knowledgeSourceRoutes);
+app.use('/api/feedback', authMiddleware, feedbackRoutes);
+app.use('/api/gamification', authMiddleware, gamificationRoutes);
+app.use('/api/focus', authMiddleware, focusRoutes);
+app.use('/api/wellness', authMiddleware, wellnessRoutes);
+app.use('/api/notes', authMiddleware, notesRouter);
+app.use('/api/todos', authMiddleware, todosRouter);
+app.use('/api/knowledge-state', authMiddleware, knowledgeStateRoutes);
+app.use('/api/deep-research', authMiddleware, deepResearchRoutes);
+
+// --- SENTRY ERROR HANDLER ---
+Sentry.setupExpressErrorHandler(app);
+
+// --- Centralized Error Handling ---
+app.use((err, req, res, next) => {
+  logger.error("Unhandled Error:", {
+    message: err.message,
+    stack: err.stack,
+    status: err.status,
+    url: req.originalUrl,
+    method: req.method
+  });
+
+  const statusCode = err.status || 500;
+  const message = err.message || "An internal server error occurred.";
+  if (!res.headersSent) {
+    res.status(statusCode).json({ message });
+  }
+});
+
+// --- Server Startup Logic ---
+async function startServer() {
+  logger.info("--- Starting Server Initialization ---");
+  try {
+    await setupAdmin(mongoUri);
+    await ensureServerDirectories();
+    await connectDB(mongoUri);
+    await checkEmailCredentials(); // <<< ADDED CREDENTIAL CHECK
+    await performAssetCleanup();
+    await checkRagService(pythonRagUrl);
+    await connectRedis();
+
+    // --- Start Gamification Cron Jobs ---
+    logger.info('Starting gamification cron jobs...');
+    startBountyGenerator();        // Daily bounty generation (9 AM IST)
+    startBountyCleanup();         // Bounty cleanup (every 2 hours)
+    startBossBattleGenerator();    // Boss battle generation (every 4 hours)
+    startBossBattleCleanup();      // Boss battle cleanup (every 2 hours)
+    logger.info('✓ All gamification cron jobs started successfully');
+
+
+    const server = app.listen(port, "0.0.0.0", () => {
+      logger.info("=== Node.js Server Ready ===");
+      logger.info(`🚀 Server listening on port ${port}`);
+      getLocalIPs().forEach((ip) => {
+        logger.info(`   - http://${ip}:${port}`);
+      });
+      logger.info("============================");
+    });
+
+    // --- Initialize Socket.io ---
+    const { initSocket } = require("./services/socketService");
+    initSocket(server);
+    logger.info('✓ Socket.io initialized successfully');
+
+    const gracefulShutdown = async (signal) => {
+      logger.info(`${signal} received. Shutting down...`);
+      server.close(async () => {
+        try {
+          await mongoose.connection.close();
+          logger.info("MongoDB connection closed.");
+          process.exit(0);
+        } catch (err) {
+          logger.error("Error closing MongoDB connection:", err);
+          process.exit(1);
+        }
+      });
+    };
+    process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+    process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+  } catch (error) {
+    logger.error("!!! Failed to start Node.js server:", { message: error.message, stack: error.stack });
+    process.exit(1);
+  }
+}
+
+// Helper functions
+async function ensureServerDirectories() {
+  const dirs = [
+    path.join(__dirname, "assets"),
+    path.join(__dirname, "backup_assets"),
+    path.join(__dirname, "generated_docs"),
+  ];
+  for (const dir of dirs) {
+    if (!fs.existsSync(dir)) await fs.promises.mkdir(dir, { recursive: true });
+  }
+}
+
+async function checkRagService(url) {
+  if (!url) {
+    logger.warn("Python RAG service URL not configured.");
+    return;
+  }
+  try {
+    const response = await axios.get(`${url}/health`, { timeout: 7000 });
+    if (response.data.status === "ok") {
+      logger.info("✓ Python RAG service is available.");
+    } else {
+      logger.warn(
+        `! Python RAG service responded but is not healthy. Status: ${JSON.stringify(response.data)}`
+      );
+    }
+  } catch (error) {
+    logger.warn(`! Python RAG service is not reachable at ${url}.`);
+  }
+}
+
+startServer();

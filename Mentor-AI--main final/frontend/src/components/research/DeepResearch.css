@@ -1,0 +1,183 @@
+/* frontend/src/components/research/DeepResearch.css */
+/* Premium deep research UI styles — dark mode focused with glassmorphism */
+
+/* ============================================
+   DEEP RESEARCH PANEL ANIMATIONS
+   ============================================ */
+
+@keyframes research-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+@keyframes research-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes source-scan {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+@keyframes float-in {
+  0% { opacity: 0; transform: translateY(12px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes glow-ring {
+  0%, 100% { box-shadow: 0 0 8px 0 rgba(99, 102, 241, 0.2); }
+  50% { box-shadow: 0 0 20px 4px rgba(99, 102, 241, 0.35); }
+}
+
+@keyframes count-up {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes progress-bar-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ============================================
+   DEEP RESEARCH PANEL CONTAINER
+   ============================================ */
+
+.deep-research-panel {
+  animation: float-in 0.4s ease-out forwards;
+}
+
+.deep-research-panel .research-progress-bar {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa, #6366f1);
+  background-size: 200% 100%;
+  animation: research-shimmer 2s linear infinite;
+  border-radius: 9999px;
+  height: 4px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.deep-research-panel .research-stage-active {
+  animation: research-pulse 2s ease-in-out infinite;
+}
+
+.deep-research-panel .research-glow {
+  animation: glow-ring 3s ease-in-out infinite;
+}
+
+/* ============================================
+   SOURCE CARDS
+   ============================================ */
+
+.source-card {
+  animation: float-in 0.35s ease-out forwards;
+  animation-delay: calc(var(--card-index, 0) * 0.08s);
+  opacity: 0;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.source-card:hover {
+  transform: translateY(-2px);
+}
+
+.source-card .credibility-bar {
+  height: 3px;
+  border-radius: 9999px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.source-card .credibility-high { background: linear-gradient(90deg, #10b981, #34d399); }
+.source-card .credibility-medium { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.source-card .credibility-low { background: linear-gradient(90deg, #ef4444, #f87171); }
+
+/* Source type badges */
+.source-badge {
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.source-badge-arxiv { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+.source-badge-pubmed { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+.source-badge-scholar { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+.source-badge-web { background: rgba(156, 163, 175, 0.15); color: #9ca3af; }
+.source-badge-local { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+
+/* ============================================
+   RESEARCH HISTORY
+   ============================================ */
+
+.research-history-item {
+  animation: float-in 0.3s ease-out forwards;
+  animation-delay: calc(var(--item-index, 0) * 0.06s);
+  opacity: 0;
+}
+
+/* ============================================
+   FACT-CHECK INDICATORS
+   ============================================ */
+
+.fact-check-verified {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.02));
+  border-left: 3px solid #10b981;
+}
+
+.fact-check-flagged {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(239, 68, 68, 0.02));
+  border-left: 3px solid #ef4444;
+}
+
+/* ============================================
+   CITATION GRAPH MINI-MAP
+   ============================================ */
+
+.citation-node {
+  transition: all 0.2s ease;
+}
+
+.citation-node:hover {
+  transform: scale(1.15);
+  filter: brightness(1.2);
+}
+
+/* ============================================
+   CONTRADICTION CARDS
+   ============================================ */
+
+.contradiction-card {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.06), rgba(245, 158, 11, 0.02));
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  border-radius: 12px;
+}
+
+/* ============================================
+   CUSTOM SCROLLBAR FOR RESEARCH PANELS
+   ============================================ */
+
+.research-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.research-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.research-scroll::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.3);
+  border-radius: 9999px;
+}
+
+.research-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.5);
+}
+
+/* ============================================
+   MARKDOWN REPORT OVERRIDES
+   ============================================ */
+
+.research-report h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem; }
+.research-report h2 { font-size: 1.15rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(99, 102, 241, 0.2); }
+.research-report h3 { font-size: 1rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; }

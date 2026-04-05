@@ -1,0 +1,21 @@
+.tutor-status {
+    font-size: 14px;
+    font-style: italic;
+    color: #9aa0a6;
+    margin: 6px 0;
+    animation: fade 1.4s infinite;
+}
+
+@keyframes fade {
+    0% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.4;
+    }
+}
