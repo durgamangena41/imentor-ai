@@ -91,7 +91,7 @@ function CenterPanel({ messages, setMessages, currentSessionId, onChatProcessing
 
         // --- THIS IS THE FIX ---
         // Construct the full, correct API URL using the environment variable.
-        const apiUrl = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api'}/chat/message`;
+        const apiUrl = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:2000/api'}/chat/message`;
 
         const response = await fetch(apiUrl, {
             // --- END OF FIX ---

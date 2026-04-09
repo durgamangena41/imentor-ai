@@ -5,6 +5,7 @@ const axios = require('axios');
 const { logger } = require('../utils/logger');
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const GEMINI_MODEL = process.env.GEMINI_MODEL || process.env.GEMINI_MODEL_NAME || "gemini-2.0-flash";
 
 /**
  * Synthetic Data Service
@@ -19,7 +20,7 @@ class SyntheticDataService {
             const content = await getSubjectContent(subject);
             if (!content) throw new Error(`No content found for subject: ${subject}`);
 
-            const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+            const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
 
             const prompt = `
                 You are an expert curriculum designer and AI trainer. 
@@ -68,7 +69,7 @@ class SyntheticDataService {
     static async generateForTopic(subject, topic, limit = 5) {
         try {
             const content = await getSubjectContent(subject);
-            const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+            const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
 
             const prompt = `
                 You are an expert AI trainer. Focus ONLY on the topic: "${topic}" within the subject "${subject}".

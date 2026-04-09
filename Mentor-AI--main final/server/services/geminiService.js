@@ -3,9 +3,10 @@
 require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
+const GEMINI_MODEL = "gemini-2.0-flash";
 const FALLBACK_API_KEY = process.env.GEMINI_API_KEY;
-// Defaults to gemini-1.5-flash as it is more stable/common than 'gemini-flash-latest' which may vary
-const MODEL_NAME = process.env.GEMINI_MODEL_NAME || "gemini-flash-latest";
+// Default Gemini model used across the app.
+const MODEL_NAME = process.env.GEMINI_MODEL || process.env.GEMINI_MODEL_NAME || GEMINI_MODEL;
 
 const DEFAULT_MAX_OUTPUT_TOKENS_CHAT = 8192;
 const DEFAULT_MAX_OUTPUT_TOKENS_KG = 8192;
@@ -61,7 +62,7 @@ async function generateContentWithHistory(
             parts: [{ text: currentUserQuery }]
         });
 
-        console.log(`Sending to ${MODEL_NAME}. Turns: ${contents.length}.`);
+        console.log(`Sending to ${modelToUse}. Turns: ${contents.length}.`);
 
         // Generate content
         const generationConfig = {
@@ -91,7 +92,7 @@ async function generateContentWithHistory(
         console.error("Gemini API Call Error:", error?.message || error);
 
         let clientMessage = "AI Service Error: " + (error.message || "Unknown error");
-        if (error.message?.includes("404") || error.message?.includes("not found")) clientMessage = `Model ${MODEL_NAME} not found.`;
+        if (error.message?.includes("404") || error.message?.includes("not found")) clientMessage = `Model not found.`;
         if (error.status === 503) clientMessage = "AI Service Overloaded.";
 
         // --- QUOTA FAILOVER FIX ---
@@ -138,6 +139,7 @@ async function fetchAvailableModels() {
 }
 
 module.exports = {
+    GEMINI_MODEL,
     generateContentWithHistory,
     DEFAULT_MAX_OUTPUT_TOKENS_KG,
     fetchAvailableModels,

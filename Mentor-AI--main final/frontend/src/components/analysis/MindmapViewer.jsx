@@ -48,6 +48,16 @@ const MindmapViewer = forwardRef(({ mermaidCode }, ref) => {
             svgContainerRef.current.innerHTML = '<div class="flex justify-center items-center h-full w-full text-sm text-text-muted-light dark:text-text-muted-dark"><div class="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-primary mr-2"></div>Rendering diagram...</div>';
             
             let codeToRender = mermaidCode.trim();
+
+            const looksLikeAnalysisError = /^error\s+generating\s+mindmap:/i.test(codeToRender) || /^error:/i.test(codeToRender);
+            if (looksLikeAnalysisError) {
+                setIsLoading(false);
+                setError(codeToRender);
+                if (svgContainerRef.current) {
+                    svgContainerRef.current.innerHTML = `<div class="p-4 text-center text-red-500 dark:text-red-400 text-xs break-words"><strong>Mind map generation failed:</strong><br>${escapeHtml(codeToRender)}</div>`;
+                }
+                return;
+            }
             
             // --- THIS IS THE FIX ---
             // New, more robust regex to find the diagram code.
@@ -64,6 +74,18 @@ const MindmapViewer = forwardRef(({ mermaidCode }, ref) => {
                 // Fallback for cases where LLM might forget the fences entirely.
                 // We still trim to remove potential whitespace.
                 codeToRender = codeToRender.trim();
+            }
+
+            const hasSupportedDiagramType = /^(mindmap|graph|flowchart|sequenceDiagram)\b/i.test(codeToRender);
+            if (!hasSupportedDiagramType) {
+                setIsLoading(false);
+                const friendlyError = "Mind map output is not valid Mermaid syntax. Please re-run analysis.";
+                setError(friendlyError);
+                if (svgContainerRef.current) {
+                    const codeSnippet = escapeHtml(codeToRender.substring(0, 200) + (codeToRender.length > 200 ? "..." : ""));
+                    svgContainerRef.current.innerHTML = `<div class="p-4 text-center text-red-500 dark:text-red-400 text-xs break-all"><strong>${escapeHtml(friendlyError)}</strong><br><strong class='mt-2 block'>Received content (first 200 chars):</strong><pre class='text-left text-xs bg-gray-100 dark:bg-gray-700 p-2 rounded mt-1 whitespace-pre-wrap'>${codeSnippet}</pre></div>`;
+                }
+                return;
             }
             // --- END OF FIX ---
 

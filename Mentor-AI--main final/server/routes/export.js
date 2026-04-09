@@ -60,6 +60,9 @@ router.post('/podcast', async (req, res) => {
             if (user.preferredLlmProvider === 'gemini' && user.encryptedApiKey) {
                 apiKeyForRequest = decrypt(user.encryptedApiKey);
             }
+            if (user.preferredLlmProvider === 'gemini' && !apiKeyForRequest && process.env.GEMINI_API_KEY) {
+                apiKeyForRequest = process.env.GEMINI_API_KEY;
+            }
             // If the user prefers Ollama, apiKeyForRequest will remain null, which is fine.
             
         } else {

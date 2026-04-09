@@ -404,7 +404,7 @@ router.get('/stats', async (req, res) => {
             weeklyActivitiesCompleted,
             activityCounts,
             averageStarRatingPerActivityType: userAverageRatingPerType,
-            globalAverageRatingPerActivityType,
+            globalAverageRatingPerActivityType: globalAverageRatingPerType,
         });
     } catch (error) {
         console.error('[Wellness] Error fetching wellness stats:', error);

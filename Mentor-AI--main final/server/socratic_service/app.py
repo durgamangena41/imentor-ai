@@ -23,6 +23,7 @@ CORS(app)
 
 # Configuration
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
 DB_FOLDER = os.path.join(os.path.dirname(__file__), 'chroma_db')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -32,7 +33,7 @@ model = None
 if GEMINI_API_KEY:
     try:
         genai.configure(api_key=GEMINI_API_KEY)
-        model = genai.GenerativeModel('gemini-flash-latest')
+        model = genai.GenerativeModel(GEMINI_MODEL)
         logger.info("Gemini API configured successfully")
     except Exception as e:
         logger.warning(f"Failed to configure Gemini: {e}. Using fallback mode.")

@@ -25,6 +25,8 @@ export const AuthProvider = ({ children }) => {
                 id: authApiResponse._id, 
                 email: authApiResponse.email, 
                 username: authApiResponse.username,
+                isAdmin: Boolean(authApiResponse.isAdmin),
+                profile: authApiResponse.profile || {},
                 hasCompletedOnboarding: authApiResponse.hasCompletedOnboarding
             };
             setUser(userObject);
@@ -50,6 +52,8 @@ export const AuthProvider = ({ children }) => {
                             id: userDataFromMe._id, 
                             email: userDataFromMe.email, 
                             username: userDataFromMe.username,
+                            isAdmin: Boolean(userDataFromMe.isAdmin),
+                            profile: userDataFromMe.profile || {},
                             hasCompletedOnboarding: userDataFromMe.hasCompletedOnboarding
                         });
                     } else {

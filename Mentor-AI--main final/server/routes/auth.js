@@ -169,7 +169,16 @@ router.post('/signin', async (req, res) => {
             auditLog(req, 'ADMIN_LOGIN_SUCCESS', { email: user.email });
             const payload = { userId: user._id, email: user.email, isAdmin: true };
             const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: JWT_EXPIRATION });
-            return res.status(200).json({ isAdminLogin: true, token: token, message: 'Admin login successful' });
+            return res.status(200).json({
+                isAdminLogin: true,
+                token: token,
+                isAdmin: true,
+                _id: user._id,
+                email: user.email,
+                username: user.username,
+                profile: user.profile || {},
+                message: 'Admin login successful'
+            });
         }
         
         auditLog(req, 'USER_LOGIN_SUCCESS', { email: user.email });
@@ -181,6 +190,8 @@ router.post('/signin', async (req, res) => {
             _id: user._id,
             email: user.email,
             username: user.username,
+            isAdmin: false,
+            profile: user.profile || {},
             hasCompletedOnboarding: user.hasCompletedOnboarding,
             message: "Login successful",
         });
@@ -198,6 +209,8 @@ router.get('/me', authMiddleware, async (req, res) => {
         _id: req.user._id,
         email: req.user.email,
         username: req.user.username,
+        isAdmin: Boolean(req.user.isAdmin),
+        profile: req.user.profile || {},
         hasCompletedOnboarding: req.user.hasCompletedOnboarding
     });
 });

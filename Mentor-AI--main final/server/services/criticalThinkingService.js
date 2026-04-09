@@ -3,7 +3,7 @@ const geminiService = require('./geminiService');
 const ollamaService = require('./ollamaService');
 const { CRITICAL_THINKING_CUE_TEMPLATE } = require('../config/promptTemplates');
 
-const CUE_GEMINI_MODEL = process.env.PROMPT_COACH_GEMINI_MODEL || "gemini-1.5-flash";
+const CUE_GEMINI_MODEL = process.env.GEMINI_MODEL || process.env.GEMINI_MODEL_NAME || "gemini-2.0-flash";
 const CUE_OLLAMA_MODEL = process.env.OLLAMA_DEFAULT_MODEL || 'qwen2.5:3b-instruct';
 
 /**

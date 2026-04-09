@@ -42,9 +42,13 @@ import LeaderboardPage from './pages/LeaderboardPage.jsx';
 import ChallengesPage from './pages/ChallengesPage.jsx';
 import FocusTrackerPage from './pages/FocusTrackerPage.jsx';
 import NotepadPage from './pages/NotepadPage.jsx';
+import TimetablePage from './pages/TimetablePage.jsx';
+import PrepModePage from './pages/PrepModePage.jsx';
+import DoubtResolverPage from './pages/DoubtResolverPage.jsx';
+import SummarizerPage from './pages/SummarizerPage.jsx';
 
 const focusApi = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api',
+    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:2000/api',
 });
 
 function getFocusAuthHeaders() {
@@ -267,9 +271,11 @@ function MainAppLayout({
     messages,
     setMessages
 }) {
-    const { user: regularUser, logout: regularUserLogout } = useRegularAuth();
+    const location = useLocation();
+    const { token: regularUserToken, user: regularUser, logout: regularUserLogout } = useRegularAuth();
     const {
         currentSessionId,
+        selectedSubject,
         isLeftPanelOpen,
         isRightPanelOpen,
         setSessionId: setGlobalSessionId,
@@ -280,7 +286,6 @@ function MainAppLayout({
     } = useAppState();
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
     const [isChatProcessing, setIsChatProcessing] = useState(false);
-
     const handleChatProcessingStatusChange = (isLoading) => {
         setIsChatProcessing(isLoading);
     };
@@ -297,6 +302,10 @@ function MainAppLayout({
         }
         setIsHistoryModalOpen(false);
     };
+
+    if (location.pathname.startsWith('/summarizer')) {
+        return <SummarizerPage />;
+    }
 
     return (
         <>
@@ -315,7 +324,7 @@ function MainAppLayout({
             <div className="flex flex-1 overflow-hidden pt-16 bg-background-light dark:bg-background-dark">
                 <AnimatePresence mode="wait">
                     {isLeftPanelOpen ? (
-                        <motion.aside key="left-panel-main" initial={{ x: '-100%' }} animate={{ x: '0%' }} exit={{ x: '-100%' }} transition={{ type: 'spring', stiffness: 300, damping: 30 }} className="w-full md:w-72 lg:w-80 xl:w-96 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark overflow-y-auto p-3 sm:p-4 shadow-lg flex-shrink-0 custom-scrollbar">
+                        <motion.aside key="left-panel-main" initial={{ x: '-100%' }} animate={{ x: '0%' }} exit={{ x: '-100%' }} transition={{ type: 'spring', stiffness: 300, damping: 30 }} className="w-full md:w-72 lg:w-80 xl:w-96 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark overflow-y-auto min-h-0 p-3 sm:p-4 shadow-lg flex-shrink-0 custom-scrollbar">
                             <LeftPanel isChatProcessing={isChatProcessing} />
                         </motion.aside>
                     ) : (<LeftCollapsedNav isChatProcessing={isChatProcessing} />)}
@@ -334,7 +343,7 @@ function MainAppLayout({
                 </main>
                 <AnimatePresence mode="wait">
                     {isRightPanelOpen ? (
-                        <motion.aside key="right-panel-main" initial={{ x: '100%' }} animate={{ x: '0%' }} exit={{ x: '100%' }} transition={{ type: 'spring', stiffness: 300, damping: 30 }} className="hidden md:flex md:flex-col md:w-72 lg:w-80 xl:w-96 bg-surface-light dark:bg-surface-dark border-l border-border-light dark:border-border-dark overflow-y-auto p-3 sm:p-4 shadow-lg flex-shrink-0 custom-scrollbar">
+                        <motion.aside key="right-panel-main" initial={{ x: '100%' }} animate={{ x: '0%' }} exit={{ x: '100%' }} transition={{ type: 'spring', stiffness: 300, damping: 30 }} className="hidden md:flex md:flex-col md:w-72 lg:w-80 xl:w-96 bg-surface-light dark:bg-surface-dark border-l border-border-light dark:border-border-dark overflow-y-auto min-h-0 p-3 sm:p-4 shadow-lg flex-shrink-0 custom-scrollbar">
                             <RightPanel isChatProcessing={isChatProcessing} /> {/* Pass the prop */}
                         </motion.aside>
                     ) : (<RightCollapsedNav isChatProcessing={isChatProcessing} />)} {/* Pass the prop */}
@@ -471,6 +480,13 @@ function App() {
             }
             setAppInitializing(false);
 
+            if (regularUserToken && regularUser?.isAdmin) {
+                setShowAuthModal(false);
+                setIsAdminSessionActive(true);
+                if (!location.pathname.startsWith('/admin')) navigate('/admin/dashboard', { replace: true });
+                return;
+            }
+
             if (regularUserToken && regularUser) {
                 if (regularUser.hasCompletedOnboarding === false) {
                     setIsAwaitingOnboarding(true);
@@ -483,7 +499,7 @@ function App() {
 
                 if (location.pathname.startsWith('/admin')) navigate('/', { replace: true });
 
-                const shouldCreateSession = !currentSessionId && !location.pathname.startsWith('/tools') && !location.pathname.startsWith('/study-plan');
+                const shouldCreateSession = !currentSessionId && !location.pathname.startsWith('/tools') && !location.pathname.startsWith('/study-plan') && !location.pathname.startsWith('/timetable');
                 if (shouldCreateSession && !isCreatingSession) {
                     setIsCreatingSession(true);
                     await handleNewChat(() => { }, true, true);
@@ -512,6 +528,8 @@ function App() {
                     id: authData._id,
                     email: authData.email,
                     username: authData.username,
+                    isAdmin: Boolean(authData.isAdmin),
+                    profile: authData.profile || {},
                     hasCompletedOnboarding: authData.hasCompletedOnboarding
                 };
                 setRegularUserInAuthContext(userForContext);
@@ -582,6 +600,9 @@ function App() {
                         <Route path="/gamification/skill-tree/map" element={<SkillTreeGameMap />} />
                         <Route path="/gamification/skill-tree/classic" element={<SkillTreeMap />} />
                         <Route path="/skill-tree" element={<SkillTreePage />} />
+                        <Route path="/timetable" element={<TimetablePage />} />
+                        <Route path="/prep-mode" element={<PrepModePage />} />
+                        <Route path="/doubt-resolver" element={<DoubtResolverPage />} />
                         <Route path="/leaderboard" element={<LeaderboardPage />} />
                         <Route path="/challenges" element={<ChallengesPage />} />
                         <Route path="/focus" element={<FocusTrackerPage />} />

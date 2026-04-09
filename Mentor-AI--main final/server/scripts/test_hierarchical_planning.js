@@ -8,7 +8,7 @@ dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const mockRequestContext = {
     llmProvider: 'gemini',
-    geminiModel: 'gemini-2.0-flash',
+    geminiModel: process.env.GEMINI_MODEL || process.env.GEMINI_MODEL_NAME || 'gemini-2.0-flash',
     apiKey: process.env.GEMINI_API_KEY,
     userId: 'test_user_1.4',
     criticalThinkingEnabled: true,

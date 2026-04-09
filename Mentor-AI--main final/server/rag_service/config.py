@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from pythonjsonlogger import jsonlogger
 from datetime import datetime, timezone
 
+GEMINI_MODEL = "gemini-2.0-flash"
+
 # --- Load .env from the parent 'server' directory ---
 dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
 load_dotenv(dotenv_path=dotenv_path)
@@ -86,7 +88,7 @@ LOGGING_FORMAT     = '%(asctime)s - %(levelname)s - [%(name)s:%(lineno)d] - %(me
 
 # --- API Keys and Service URLs ---
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
-GEMINI_MODEL_NAME = os.getenv('GEMINI_MODEL_NAME', "gemini-flash-latest")
+GEMINI_MODEL_NAME = os.getenv('GEMINI_MODEL', os.getenv('GEMINI_MODEL_NAME', GEMINI_MODEL))
 SENTRY_DSN = os.getenv('SENTRY_DSN')
 TURNITIN_API_URL = os.getenv('TURNITIN_API_URL')
 TURNITIN_API_KEY = os.getenv('TURNITIN_API_KEY')

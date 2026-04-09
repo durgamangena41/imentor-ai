@@ -5,7 +5,7 @@ const { PROMPT_COACH_TEMPLATE } = require('../config/promptTemplates');
 const User = require('../models/User');
 const { decrypt } = require('../utils/crypto');
 
-const COACH_GEMINI_MODEL = process.env.PROMPT_COACH_GEMINI_MODEL || 'gemini-1.5-flash-latest';
+const COACH_GEMINI_MODEL = process.env.GEMINI_MODEL || process.env.GEMINI_MODEL_NAME || 'gemini-2.0-flash';
 const COACH_OLLAMA_MODEL = process.env.PROMPT_COACH_OLLAMA_MODEL || 'phi3:instruct';
 
 /**

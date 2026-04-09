@@ -14,9 +14,9 @@ Available models:
 - models/gemma-3-27b-it
 - models/gemma-3n-e4b-it
 - models/gemma-3n-e2b-it
-- models/gemini-flash-latest
+- models/gemini-2.0-flash
 - models/gemini-flash-lite-latest
-- models/gemini-pro-latest
+- models/gemini-2.0-flash
 - models/gemini-2.5-flash-lite
 - models/gemini-2.5-flash-image
 - models/gemini-2.5-flash-lite-preview-09-2025

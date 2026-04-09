@@ -5,6 +5,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 const SERVER_DEFAULT_OLLAMA_URL = process.env.OLLAMA_API_BASE_URL || 'http://localhost:11434';
 const DEFAULT_OLLAMA_MODEL = process.env.OLLAMA_DEFAULT_MODEL || 'qwen2.5:3b-instruct';
+const OLLAMA_TIMEOUT_MS = Number(process.env.OLLAMA_TIMEOUT_MS || 600000);
 
 const DEFAULT_MAX_OUTPUT_TOKENS_OLLAMA_CHAT = 8192;
 const DEFAULT_MAX_OUTPUT_TOKENS_OLLAMA_KG = 8192;
@@ -153,7 +154,7 @@ async function generateContentWithHistory(
     try {
         const response = await axios.post(endpoint, requestPayload, {
             headers,
-            timeout: 300000
+            timeout: OLLAMA_TIMEOUT_MS
         });
 
         // The /api/chat endpoint has a consistent response structure.

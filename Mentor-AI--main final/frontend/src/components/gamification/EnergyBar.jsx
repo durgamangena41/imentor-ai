@@ -2,15 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { Battery, BatteryCharging, BatteryWarning, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 
-const EnergyBar = () => {
+const EnergyBar = ({ value = null, compact = false }) => {
     const [energy, setEnergy] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(value === null);
 
     useEffect(() => {
+        if (value !== null) {
+            setEnergy({
+                currentEnergy: Math.max(0, Math.min(100, Number(value) || 0)),
+                isOnForcedBreak: false,
+            });
+            setLoading(false);
+            return undefined;
+        }
+
         fetchEnergy();
         const interval = setInterval(fetchEnergy, 30000); // Update every 30s
         return () => clearInterval(interval);
-    }, []);
+    }, [value]);
 
     const fetchEnergy = async () => {
         try {
@@ -54,16 +63,16 @@ const EnergyBar = () => {
     };
 
     return (
-        <div className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+        <div className={`flex items-center gap-2 p-2 rounded-lg border ${compact ? 'bg-slate-900/60 border-slate-700/70' : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'}`}>
             {/* Icon */}
             <div className="flex-shrink-0">
                 {getIcon()}
             </div>
 
             {/* Energy Bar */}
-            <div className="flex-1 min-w-[120px]">
+            <div className={`flex-1 ${compact ? 'min-w-[100px]' : 'min-w-[120px]'}`}>
                 <div className="flex justify-between items-center mb-1">
-                    <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Energy</span>
+                    <span className={`text-xs font-medium ${compact ? 'text-slate-300' : 'text-gray-700 dark:text-gray-300'}`}>Energy</span>
                     <span className={`text-xs font-bold ${getColor()}`}>{percentage}%</span>
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">

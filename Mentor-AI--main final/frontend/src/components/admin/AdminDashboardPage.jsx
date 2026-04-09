@@ -19,11 +19,12 @@ import DatasetManager from './DatasetManager.jsx';
 import GamificationDashboard from './GamificationDashboard.jsx';
 import CourseModelDashboard from './CourseModelDashboard.jsx';
 
-import { UploadCloud, Trash2, Eye, LogOut, Loader2, AlertTriangle, CheckCircle, RefreshCw, Shield, Users, Lightbulb, HelpCircle, Cog, Database, BarChart2, Gamepad2, Network } from 'lucide-react';
+import { UploadCloud, Trash2, Eye, LogOut, Loader2, AlertTriangle, CheckCircle, RefreshCw, Shield, Users, Lightbulb, HelpCircle, Cog, Database, BarChart2, Gamepad2, Network, Activity } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
+import CurriculumVisualizer from './CurriculumVisualizer.jsx';
 
 // Helper functions
 const localParseAnalysisOutput = (rawOutput) => {

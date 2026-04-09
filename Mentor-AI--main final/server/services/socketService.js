@@ -1,8 +1,21 @@
 // server/services/socketService.js
 const { Server } = require("socket.io");
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 const { logger } = require("../utils/logger");
 
 let io;
+
+function getTokenFromSocket(socket) {
+    const authToken = socket.handshake?.auth?.token;
+    if (authToken) return authToken;
+
+    const header = socket.handshake?.headers?.authorization || '';
+    if (header.startsWith('Bearer ')) {
+        return header.slice(7).trim();
+    }
+    return null;
+}
 
 /**
  * Initialize Socket.io server
@@ -67,5 +80,5 @@ function getIO() {
 module.exports = {
     initSocket,
     emitToUser,
-    getIO
+    getIO,
 };

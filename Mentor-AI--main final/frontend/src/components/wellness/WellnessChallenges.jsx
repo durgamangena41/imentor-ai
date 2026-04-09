@@ -3,7 +3,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Eye, Droplets, Wind, Briefcase, Clock3, Star, X, Flame, Target } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:2000/api';
 
 const ACTIVITY_XP = {
     eye_blink: 25,

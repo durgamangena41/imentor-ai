@@ -72,7 +72,7 @@ SUMMARY:`;
             [],
             prompt,
             "You are a context compression engine.",
-            { ...llmOptions, modelId: 'gemini-1.5-flash' }
+            { ...llmOptions, modelId: process.env.GEMINI_MODEL || process.env.GEMINI_MODEL_NAME || 'gemini-2.0-flash' }
         );
 
         return summaryResponse.trim();

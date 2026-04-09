@@ -126,7 +126,7 @@ Respond with a JSON object in this exact format (NO deviations):
                     analysisPrompt,
                     [],
                     llmConfig.apiKey,
-                    llmConfig.geminiModel || 'gemini-2.0-flash-exp'
+                    llmConfig.geminiModel || process.env.GEMINI_MODEL || process.env.GEMINI_MODEL_NAME || 'gemini-2.0-flash'
                 );
             }
 

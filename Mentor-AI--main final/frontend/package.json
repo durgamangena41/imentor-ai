@@ -21,6 +21,7 @@
     "framer-motion": "^12.16.0",
     "grapheme-splitter": "^1.0.4",
     "input-otp": "^1.4.2",
+    "jspdf": "^4.2.1",
     "jwt-decode": "^4.0.0",
     "katex": "^0.16.22",
     "lucide-react": "^0.511.0",

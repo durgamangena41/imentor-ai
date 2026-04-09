@@ -4,7 +4,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Clock3, Flame, Timer, ArrowLeft, Pause, Play, Square } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:2000/api';
 
 const QUOTES = [
     'Deep focus beats random hustle every single day.',

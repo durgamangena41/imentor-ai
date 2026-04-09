@@ -3,10 +3,9 @@ import React, { useState } from 'react';
 import { useAppState } from '../../contexts/AppStateContext';
 import AnalysisToolRunner from '../analysis/AnalysisToolRunner.jsx';
 import PodcastGenerator from '../analysis/PodcastGenerator.jsx';
-import KnowledgeGraphViewer from '../analysis/KnowledgeGraphViewer.jsx';
 import RealtimeKgPanel from '../analysis/RealtimeKgPanel.jsx';
-import api from '../../services/api.js';
-import { PanelRightClose, ChevronDown, ChevronUp, Telescope, Radio, BrainCircuit, Share2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { PanelRightClose, ChevronDown, ChevronUp, Telescope, Radio, Share2, CalendarClock, ArrowRight } from 'lucide-react';
 import IconButton from '../core/IconButton.jsx';
 import Modal from '../core/Modal.jsx';
 import Button from '../core/Button.jsx';
@@ -15,6 +14,7 @@ import toast from 'react-hot-toast';
 
 function RightPanel({ isChatProcessing }) {
     const { setIsRightPanelOpen, selectedDocumentForAnalysis, selectedSubject } = useAppState();
+    const navigate = useNavigate();
     const [isAnalyzerOpen, setIsAnalyzerOpen] = useState(true);
     
     // --- THIS IS THE NEW STATE FOR THE LIVE KG MODAL ---
@@ -51,6 +51,25 @@ function RightPanel({ isChatProcessing }) {
                         </p>
                         <Button onClick={() => setIsLiveKgModalOpen(true)} variant="primary" size="sm" fullWidth leftIcon={<Share2 size={16} />}>
                             Show Live Map
+                        </Button>
+                    </div>
+
+                    <div className="card-base p-3 border border-border-light dark:border-border-dark">
+                        <div className="flex items-center gap-2 text-sm font-medium mb-2">
+                            <CalendarClock size={16} className="text-primary dark:text-primary-light" />
+                            <span>Personal Timetable</span>
+                        </div>
+                        <p className="text-xs text-text-muted-light dark:text-text-muted-dark mb-3">
+                            Build a focused learning timetable around your goal, available hours, and energy windows.
+                        </p>
+                        <Button
+                            onClick={() => navigate('/timetable')}
+                            variant="outline"
+                            size="sm"
+                            fullWidth
+                            rightIcon={<ArrowRight size={16} />}
+                        >
+                            Open Timetable Builder
                         </Button>
                     </div>
 

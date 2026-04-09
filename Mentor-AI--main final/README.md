@@ -2,7 +2,7 @@
 
 This  comprehensive AI-powered tutoring application designed to assist users through interactive chat, document analysis, knowledge exploration, and smart learning tools. It integrates multiple Large Language Models (LLMs), Retrieval Augmented Generation (RAG) for contextual understanding from user-uploaded documents, and knowledge graph capabilities for critical thinking. The system also includes an admin interface for managing shared knowledge resources.
 
-**Project Repository:** https://github.com/durgamangena41/imentor-ai-final-year
+**Project Repository:** https://github.com/durgamangena41/imentor-ai
 
 ### Current Added Features
 
@@ -11,6 +11,10 @@ This  comprehensive AI-powered tutoring application designed to assist users thr
 -   **Smart Notepad + Calendar**: Rich note editing, calendar-based tasks, reminders, and printable note/export support.
 -   **Adaptive Challenges**: Smart quiz generation, topic-based retries, and weak-area recommendations.
 -   **Improved Learning Analytics**: Streaks, progress indicators, topic trends, and personalized learning insights.
+-   **interview/exam Prep Mode Persistence Upgrade**: Added structured Prep session storage with question details, evaluations, scoring arrays, and history retrieval for better replay and review.
+-   **Doubt Resolver History**: Added save and fetch APIs for resolved doubts so users can revisit prior doubt-solving sessions.
+-   **Personal Timetable Generator**: Added authenticated timetable generation with configurable study hours, focus blocks, break windows, and weekly distribution.
+-   **AI Summariser**: Added AI-based summarization workflows to generate concise, readable summaries from study content and long responses.
 
 ---
 
@@ -64,6 +68,7 @@ This  comprehensive AI-powered tutoring application designed to assist users thr
     -   **Bias & Inclusivity Check**: Uses a hybrid approach of wordlists (`bias_wordlists.py`) and an LLM to flag potentially biased language and suggest alternatives.
     -   **Readability Analysis**: Calculates Flesch-Kincaid, Gunning Fog, and other scores using `textstat`.
 -   **Generative Content Tools**:
+    -   **AI Summariser**: Quickly condenses long text into digestible summaries with structured output for faster revision and note-making. Connected through backend summarizer routes and frontend summarizer API integration.
     -   **AI Quiz Generator**: Users can upload a document, and the backend (`quiz_utils.py`, `app.py`) will use an LLM to generate a multiple-choice quiz based on its content.
     -   **Multi-Voice Podcast Generator**: Transforms any document into a high-quality, three-speaker conversational podcast. `podcast_generator.py` uses an LLM to write a script, then uses **Coqui TTS** (`tts_service.py`) to synthesize distinct voices by pitch-shifting a base voice model.
     -   **DOCX & PPTX Generation**: From any analysis modal, users can generate a report. The `document_generator.py` backend uses an LLM to expand the content and then uses the `python-docx` and `python-pptx` libraries to create and serve the downloadable files.
@@ -244,13 +249,13 @@ Follow the exact process to deploy this application in the Local Area Network
 1. Clone the Repository
 
 ```bash
-git clone https://github.com/durgamangena41/imentor-ai-final-year.git
+git clone https://github.com/durgamangena41/imentor-ai.git
 ```
 
 2. Move to project folder
 
 ```bash
-cd imentor-ai-final-year
+cd imentor-ai
 ```
 
 3. Run install.sh script file
@@ -457,8 +462,8 @@ For Windows, dependencies must be installed individually. Using a package manage
 #### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/durgamangena41/imentor-ai-final-year.git
-cd imentor-ai-final-year
+git clone https://github.com/durgamangena41/imentor-ai.git
+cd imentor-ai
 ```
 
 #### 2. Configure Environment Variables
@@ -554,7 +559,38 @@ Open multiple terminal windows to run each component of the application in the c
     npm run dev
     ```
 
-You can now access the application at **`http://localhost:2173`** in your browser.
+You can now access the application in your browser using the URL printed by Vite (commonly **`http://localhost:3000`** in this project).
+
+### 5. Login "Network Error" Troubleshooting
+
+If login shows **Network Error**, it usually means the frontend cannot reach the backend API.
+
+1. Confirm backend is running on the same port configured in `server/.env`:
+    - `PORT=2000`
+    - Start backend from `server/`:
+    ```bash
+    npm start
+    ```
+
+2. Confirm frontend API base URL matches backend port in `frontend/.env`:
+    - `VITE_API_BASE_URL=http://localhost:2000/api`
+
+3. Verify API is reachable:
+    ```bash
+    curl -X POST http://localhost:2000/api/auth/signin \
+      -H "Content-Type: application/json" \
+      -d '{"email":"admin@admin.com","password":"admin123"}'
+    ```
+
+4. If using another device on LAN, do not use `localhost` in frontend env. Use your machine IP:
+    - Example: `VITE_API_BASE_URL=http://192.168.x.x:2000/api`
+    - Restart frontend after changing `.env`.
+
+5. Check for port conflicts:
+    ```bash
+    netstat -ano | findstr :2000
+    ```
+    If nothing is listening on `:2000`, backend is not running.
 
 ---
 

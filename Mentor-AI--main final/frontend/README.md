@@ -1,12 +1,62 @@
-# React + Vite
+# IMentor AI Frontend (React + Vite)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend client for the IMentor AI platform.
 
-Currently, two official plugins are available:
+## Repository
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[https://github.com/durgamangena41/imentor-ai](https://github.com/durgamangena41/imentor-ai)
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- React 18 + Vite
+- React Router
+- Axios API layer
+- Context-based auth/session state
+- Tailwind + CSS modules
+
+## Run Frontend
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+1. Start dev server:
+
+```bash
+npm run dev
+```
+
+1. Open the URL shown in terminal (commonly `http://localhost:3000`).
+
+## Required Environment
+
+Create `frontend/.env` with:
+
+```env
+VITE_API_BASE_URL=http://localhost:2000/api
+VITE_ADMIN_USERNAME=admin@admin.com
+VITE_ADMIN_PASSWORD=admin123
+```
+
+## Today's Frontend Updates (Apr 9, 2026)
+
+- Admin login session flow fixed so valid admin users enter admin mode consistently.
+- Prep Mode history rendering improved to show richer saved details from backend sessions.
+- Login Network Error behavior documented and aligned with API port checks.
+- Classroom dashboard navigation and related UI hooks removed from active frontend flow.
+
+## Key Frontend Files
+
+- `src/App.jsx`
+- `src/contexts/AuthContext.jsx`
+- `src/services/api.js`
+- `src/components/auth/AuthModal.jsx`
+- `src/pages/PrepModePage.jsx`
+
+## Quick Troubleshooting
+
+- If login shows Network Error, verify backend is running on port 2000.
+- Ensure `VITE_API_BASE_URL` matches backend port and host.
+- Restart frontend after `.env` changes.

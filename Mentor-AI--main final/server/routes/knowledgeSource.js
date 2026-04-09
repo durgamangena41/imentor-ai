@@ -9,6 +9,7 @@ const AdminDocument = require('../models/AdminDocument');
 const KnowledgeSource = require('../models/KnowledgeSource');
 const { decrypt } = require('../utils/crypto');
 const { auditLog } = require('../utils/logger');
+const { checkOllamaHealth } = require('../services/ollamaHealthService');
 const fs = require('fs').promises;
 
 // --- HELPER FOR PYTHON SERVICE DELETION ---
@@ -118,10 +119,17 @@ router.post('/', async (req, res) => {
         // 4. Trigger Analysis Worker
         const user = await User.findById(userId).select('+encryptedApiKey preferredLlmProvider ollamaModel ollamaUrl').lean();
         let llmProvider = user?.preferredLlmProvider || 'gemini';
-        let userApiKey = user.encryptedApiKey ? decrypt(user.encryptedApiKey) : null;
+        let userApiKey = user?.encryptedApiKey ? decrypt(user.encryptedApiKey) : null;
+
+        // Fallback to server-level key when user prefers Gemini but has no personal key.
+        if (llmProvider === 'gemini' && !userApiKey && process.env.GEMINI_API_KEY) {
+            userApiKey = process.env.GEMINI_API_KEY;
+        }
         
-        // Override to Gemini if user prefers Ollama but it's not available and we have a system Gemini key
-        if (llmProvider === 'ollama' && process.env.GEMINI_API_KEY) {
+        // Override to Gemini only when Ollama is unhealthy and we have a system Gemini key.
+        const ollamaUrlToUse = user?.ollamaUrl || process.env.OLLAMA_API_BASE_URL;
+        const isOllamaHealthy = llmProvider === 'ollama' ? await checkOllamaHealth(ollamaUrlToUse) : true;
+        if (llmProvider === 'ollama' && !isOllamaHealthy && process.env.GEMINI_API_KEY) {
             console.log(`[KnowledgeSource] User prefers Ollama but it's unavailable. Using Gemini with system key.`);
             llmProvider = 'gemini';
             userApiKey = process.env.GEMINI_API_KEY;
@@ -129,7 +137,7 @@ router.post('/', async (req, res) => {
         
         const workerBaseData = {
             sourceId: sourceDoc._id.toString(), userId: userId.toString(), originalName: title, llmProvider,
-            ollamaModel: user.ollamaModel, apiKey: userApiKey, ollamaUrl: user.ollamaUrl
+            ollamaModel: user?.ollamaModel, apiKey: userApiKey, ollamaUrl: ollamaUrlToUse
         };
         
         const analysisWorker = new Worker(path.resolve(__dirname, '../workers/analysisWorker.js'), { 

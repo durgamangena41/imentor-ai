@@ -42,6 +42,7 @@ const toolsRoutes = require("./routes/tools");
 const learningRoutes = require("./routes/learning");
 const learningPathRoutes = require("./routes/learningPath");
 const knowledgeSourceRoutes = require("./routes/knowledgeSource");
+const timetableRoutes = require('./routes/timetable');
 const analyticsRoutes = require('./routes/analytics');
 const feedbackRoutes = require('./routes/feedback');
 const finetuningRoutes = require('./routes/finetuning');
@@ -51,6 +52,9 @@ const wellnessRoutes = require('./routes/wellness');
 const { notesRouter, todosRouter } = require('./routes/notes');
 const knowledgeStateRoutes = require('./routes/knowledgeState');
 const deepResearchRoutes = require('./routes/deepResearch');
+const prepModeRoutes = require('./routes/prepMode');
+const doubtResolverRoutes = require('./routes/doubtResolver');
+const summarizerRoutes = require('./routes/summarizer');
 const { setupAdmin } = require('./scripts/setupAdmin');
 
 // --- Cron Jobs ---
@@ -118,6 +122,7 @@ app.use("/api/kg", authMiddleware, kgRoutes);
 app.use("/api/llm", authMiddleware, llmConfigRoutes);
 app.use("/api/tools", authMiddleware, toolsRoutes);
 app.use("/api/knowledge-sources", authMiddleware, knowledgeSourceRoutes);
+app.use('/api/timetable', authMiddleware, timetableRoutes);
 app.use('/api/feedback', authMiddleware, feedbackRoutes);
 app.use('/api/gamification', authMiddleware, gamificationRoutes);
 app.use('/api/focus', authMiddleware, focusRoutes);
@@ -126,6 +131,9 @@ app.use('/api/notes', authMiddleware, notesRouter);
 app.use('/api/todos', authMiddleware, todosRouter);
 app.use('/api/knowledge-state', authMiddleware, knowledgeStateRoutes);
 app.use('/api/deep-research', authMiddleware, deepResearchRoutes);
+app.use('/api/prep', authMiddleware, prepModeRoutes);
+app.use('/api/doubt', authMiddleware, doubtResolverRoutes);
+app.use('/api/summarizer', authMiddleware, summarizerRoutes);
 
 // --- SENTRY ERROR HANDLER ---
 Sentry.setupExpressErrorHandler(app);

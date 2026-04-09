@@ -1,0 +1,95 @@
+"Tell me about yourself."
+
+
+Answer: "I am a B.Tech student specializing in Artificial Intelligence and Machine Learning at Sasi Institute. I have a strong foundation in Python and full-stack development. Beyond my academics, I have gained hands-on experience through internships at Aimers Society and Alpixn Technologies, where I built AI chatbots and integrated ML models. I recently completed a Python Full Stack internship at NIT Tiruchirappalli to further enhance my web-based application skills."
++3
+
+"Why should we hire you?"
+
+
+Answer: "You should hire me because I combine technical proficiency in AI/ML with a proven track record of innovation, such as winning second place at the NIT Andhra Pradesh Hackathon. I am adaptable and have experience working on diverse projects—from vehicle detection using YOLO to building RAG-based document chatbots. My background in both Mechanical Engineering and AI gives me a unique problem-solving perspective that aligns with Global Logic’s engineering-centric culture."
+
+
+"Why Global Logic?"
+
+Answer: "Global Logic is a leader in digital product engineering, and I am eager to contribute to a company that works on cutting-edge technology for global brands. I am particularly impressed by how you integrate design and complex engineering to build smarter products, which matches my career goal of growing in a dynamic, tech-driven organization."
+
+Gemini said
+To help you prepare for tomorrow's Global Logic drive, I have categorized potential questions and provided tailored answers based on your resume and the company's recruitment process.
+
+1. HR & Behavioral Questions
+These focus on your "fit" and communication skills.
+
+"Tell me about yourself."
+
+
+Answer: "I am a B.Tech student specializing in Artificial Intelligence and Machine Learning at Sasi Institute. I have a strong foundation in Python and full-stack development. Beyond my academics, I have gained hands-on experience through internships at Aimers Society and Alpixn Technologies, where I built AI chatbots and integrated ML models. I recently completed a Python Full Stack internship at NIT Tiruchirappalli to further enhance my web-based application skills."
++3
+
+"Why should we hire you?"
+
+
+Answer: "You should hire me because I combine technical proficiency in AI/ML with a proven track record of innovation, such as winning second place at the NIT Andhra Pradesh Hackathon. I am adaptable and have experience working on diverse projects—from vehicle detection using YOLO to building RAG-based document chatbots. My background in both Mechanical Engineering and AI gives me a unique problem-solving perspective that aligns with Global Logic’s engineering-centric culture."
++4
+
+"Why Global Logic?"
+
+Answer: "Global Logic is a leader in digital product engineering, and I am eager to contribute to a company that works on cutting-edge technology for global brands. I am particularly impressed by how you integrate design and complex engineering to build smarter products, which matches my career goal of growing in a dynamic, tech-driven organization."
+
+2. Technical & Project Questions
+Expect deep dives into your resume projects.
+
+"Explain the architecture of your Smart AI Content Creator."
+
+
+Answer: "It is built using the MERN (MongoDB, Express, React, Node.js) stack. I integrated the Google Gemini API to handle text and image generation. I also implemented a history tracking feature so users can revisit their previous creations."
+
+"How did you implement Object Detection for Traffic Vehicles?"
+
+
+Answer: "I used Python and the YOLO (You Only Look Once) algorithm to detect and track vehicles in real-time. This involved processing video feeds to identify different vehicle classes, with the ultimate goal of improving road safety monitoring."
+
+"What is a RAG-based Document Chatbot?"
+
+
+Answer: "RAG stands for Retrieval-Augmented Generation. Instead of relying only on a pre-trained model's internal knowledge, the chatbot retrieves relevant information from a specific document repository first and then uses generative AI to provide context-aware answers.
+
+1. Technical Questions on "Mapping" (Data & Logic)
+In a technical context, "mapping" can refer to either Geospatial (GIS) data or Data Structures (like HashMaps). Be prepared for both:
+
+Geospatial Basics:
+
+What is the difference between Vector and Raster data? (Vector uses points/lines/polygons; Raster uses pixel grids like satellite images).
+
+How do you ensure the accuracy of map data? (Methods include cross-referencing satellite imagery, ground-truthing, and automated validation scripts).
+
+What is a Point of Interest (POI) in a map? (Specific locations like restaurants, hospitals, or malls marked on a map).
+
+Database & Logic Mapping:
+
+What are the types of Mapping Cardinality? Explain one-to-one, one-to-many, and many-to-many relationships.
+
+Can you explain a one-to-one correspondence (bijection) between two strings? (Write a function to check if characters in String A map uniquely to characters in String B).
+
+How do HashMaps work? (Focus on key-value pairs and how they allow for fast data retrieval).
+
+2. GlobalLogic-Specific Mapping Scenarios
+The company often works on "Indoor Mapping" and "Navigation Attributes". They may ask:
+
+"How would you give someone directions from Point A to Point B?" This tests your logical thinking regarding routing algorithms.
+
+"If you are driving down a road, what features would you note for a map?" (Examples: speed limits, one-way signs, landmarks, lane counts).
+
+"How would you approach mapping a large indoor space like a mall?" (Mention using floor plans, 360-degree views, and integrating GPS with Indoor Positioning Systems).
+
+3. Python & AI in Mapping (Tailored to your Resume)
+Since you have experience with YOLO and Computer Vision, they may connect mapping to your skills:
+
+"How could your object detection model (YOLO) be used to enhance map data?" * Sample Answer: "My YOLO model could automatically identify and categorize traffic signs or road hazards from street-view imagery, which can then be used to update navigational attributes in real-time.".
+
+"How would you handle a large dataset of coordinates in Python?" * Sample Answer: "I would use libraries like Pandas for data manipulation or NumPy for efficient coordinate calculations.".
+
+4. Behavioral "Domain" Question
+"What if we give you a domain that you don't like (e.g., manual map data entry)?"
+
+Sample Answer: "I am highly adaptable. While my primary interest is in AI/ML, I understand that high-quality data is the foundation of any AI model. I would focus on learning the domain first and then look for ways to use my Python skills to automate or improve the process.".

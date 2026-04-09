@@ -10,6 +10,7 @@ const KnowledgeSource = require('../models/KnowledgeSource');
 const { Worker } = require('worker_threads');
 const { decrypt } = require('../utils/crypto');
 const { logger, auditLog } = require('../utils/logger');
+const { checkOllamaHealth } = require('../services/ollamaHealthService');
 
 const router = express.Router();
 
@@ -30,10 +31,30 @@ const allowedMimeTypes = {
     'image/png': { type: 'image', processor: 'media' },
     'image/jpeg': { type: 'image', processor: 'media' },
 };
-const allowedExtensions = Object.keys(allowedMimeTypes).flatMap(mime => {
-    const extMap = { 'application/pdf': '.pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx', /* etc */ };
-    return extMap[mime] || []; // Simplified, a full map would be needed
-}); // This part can be improved if needed
+
+const allowedExtensions = {
+    '.pdf': { type: 'document', processor: 'ai_core' },
+    '.docx': { type: 'document', processor: 'ai_core' },
+    '.txt': { type: 'document', processor: 'ai_core' },
+    '.md': { type: 'document', processor: 'ai_core' },
+    '.mp3': { type: 'audio', processor: 'media' },
+    '.wav': { type: 'audio', processor: 'media' },
+    '.mp4': { type: 'video', processor: 'media' },
+    '.mov': { type: 'video', processor: 'media' },
+    '.png': { type: 'image', processor: 'media' },
+    '.jpg': { type: 'image', processor: 'media' },
+    '.jpeg': { type: 'image', processor: 'media' },
+};
+
+function resolveSourceConfig(file) {
+    const mime = (file.mimetype || '').toLowerCase();
+    if (allowedMimeTypes[mime]) return allowedMimeTypes[mime];
+
+    const ext = path.extname(file.originalname || '').toLowerCase();
+    if (allowedExtensions[ext]) return allowedExtensions[ext];
+
+    return null;
+}
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -66,9 +87,12 @@ router.post('/', upload.single('file'), async (req, res) => {
     
     let newSource;
     try {
-        const { type, processor } = allowedMimeTypes[mimetype.toLowerCase()] || {};
+        const sourceConfig = resolveSourceConfig(req.file);
+        const { type, processor } = sourceConfig || {};
         if (!type || !processor) {
-            throw new Error(`Unsupported file type: ${mimetype}`);
+            const err = new Error(`Unsupported file type: ${mimetype || 'unknown'} (${path.extname(originalName || '').toLowerCase() || 'no extension'})`);
+            err.status = 400;
+            throw err;
         }
 
         newSource = new KnowledgeSource({
@@ -120,10 +144,17 @@ router.post('/', upload.single('file'), async (req, res) => {
         // Trigger analysis and KG workers...
         const user = await User.findById(userId).select('+encryptedApiKey preferredLlmProvider ollamaModel ollamaUrl').lean();
         let llmProvider = user?.preferredLlmProvider || 'gemini';
-        let userApiKey = user.encryptedApiKey ? decrypt(user.encryptedApiKey) : null;
+        let userApiKey = user?.encryptedApiKey ? decrypt(user.encryptedApiKey) : null;
+
+        // Fallback to server-level key when user prefers Gemini but has no personal key.
+        if (llmProvider === 'gemini' && !userApiKey && process.env.GEMINI_API_KEY) {
+            userApiKey = process.env.GEMINI_API_KEY;
+        }
         
-        // Override to Gemini if user prefers Ollama but it's not available and we have a system Gemini key
-        if (llmProvider === 'ollama' && process.env.GEMINI_API_KEY) {
+        // Override to Gemini only when Ollama is unhealthy and we have a system Gemini key.
+        const ollamaUrlToUse = user?.ollamaUrl || process.env.OLLAMA_API_BASE_URL;
+        const isOllamaHealthy = llmProvider === 'ollama' ? await checkOllamaHealth(ollamaUrlToUse) : true;
+        if (llmProvider === 'ollama' && !isOllamaHealthy && process.env.GEMINI_API_KEY) {
             console.log(`[Upload] User prefers Ollama but it's unavailable. Using Gemini with system key.`);
             llmProvider = 'gemini';
             userApiKey = process.env.GEMINI_API_KEY;
@@ -131,7 +162,7 @@ router.post('/', upload.single('file'), async (req, res) => {
         
         const workerBaseData = {
             sourceId: sourceDoc._id.toString(), userId: userId.toString(), originalName, llmProvider,
-            ollamaModel: user.ollamaModel, apiKey: userApiKey, ollamaUrl: user.ollamaUrl
+            ollamaModel: user?.ollamaModel, apiKey: userApiKey, ollamaUrl: ollamaUrlToUse
         };
         
         const analysisWorker = new Worker(path.resolve(__dirname, '../workers/analysisWorker.js'), { 
@@ -160,10 +191,11 @@ router.post('/', upload.single('file'), async (req, res) => {
         }
         // If headers not sent, send error to client. This happens for initial errors.
         if (!res.headersSent) {
+        const statusCode = error.status || 500;
         if (error.message && error.message.includes("E11000 duplicate key error")) {
             res.status(400).json({ message: "File already exists" });
         } else {
-            res.status(500).json({ message: error.message || "Server error during file processing." });
+            res.status(statusCode).json({ message: error.message || "Server error during file processing." });
         }
 }
 

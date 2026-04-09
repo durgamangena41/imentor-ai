@@ -8,14 +8,14 @@ import KnowledgeSourceList from '../documents/KnowledgeSourceList.jsx';
 import SubjectList from '../documents/SubjectList.jsx';
 import {
     PanelLeftClose, ChevronDown, ChevronUp, FilePlus, Settings2,
-    Bot, BookOpen, Lightbulb, Library, Timer, Flame, Clock3, HeartPulse, Award, StickyNote
+    Bot, BookOpen, Lightbulb, Library, Timer, Flame, Clock3, HeartPulse, Award, StickyNote, Users, Sparkles
 } from 'lucide-react';
 import IconButton from '../core/IconButton.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import api from '../../services/api.js';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:2000/api';
 
 const PROMPT_PRESETS = [
      { id: 'friendly_tutor', name: 'Friendly Tutor', icon: Bot, text: "You are a friendly, patient, and encouraging tutor specializing in engineering and scientific topics for PhD students. Explain concepts clearly, break down complex ideas, use analogies, and offer positive reinforcement. Ask follow-up questions to ensure understanding." },
@@ -246,7 +246,7 @@ function LeftPanel({ isChatProcessing }) {
     const SelectedPresetIcon = PROMPT_PRESETS.find(p => p.id === selectedPresetId)?.icon || Settings2;
 
     return (
-        <div className={`flex flex-col h-full ${isChatProcessing ? 'processing-overlay' : ''}`}>
+        <div className={`flex flex-col min-h-full ${isChatProcessing ? 'processing-overlay' : ''}`}>
             <div className="flex items-center justify-between mb-3 px-1 pt-1">
                 <h2 className="text-sm font-semibold text-text-light dark:text-text-dark">Assistant Controls</h2>
                 <IconButton
@@ -339,6 +339,57 @@ function LeftPanel({ isChatProcessing }) {
                 </p>
             </div>
 
+            <div className="mb-4 rounded-lg border border-cyan-200 dark:border-cyan-900 bg-gradient-to-br from-cyan-50 to-slate-50 dark:from-cyan-950/30 dark:to-slate-950/20 p-3 shadow-sm">
+                <div className="flex items-center justify-between gap-2">
+                    <p className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-cyan-800 dark:text-cyan-300">
+                        <Sparkles size={12} /> AI Summarizer
+                    </p>
+                    <Link
+                        to="/summarizer"
+                        className="rounded-md bg-cyan-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-cyan-700 transition-colors"
+                    >
+                        Open
+                    </Link>
+                </div>
+                <p className="mt-2 text-[11px] text-cyan-900/80 dark:text-cyan-200/80">
+                    Paste text, upload a file, or summarize a URL in multiple formats.
+                </p>
+            </div>
+
+            <div className="mb-4 rounded-lg border border-cyan-200 dark:border-cyan-900 bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950/30 dark:to-blue-950/20 p-3 shadow-sm">
+                <div className="flex items-center justify-between gap-2">
+                    <p className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-cyan-800 dark:text-cyan-300">
+                        <BookOpen size={12} /> Interview & Exam Prep
+                    </p>
+                    <Link
+                        to="/prep-mode"
+                        className="rounded-md bg-cyan-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-cyan-700 transition-colors"
+                    >
+                        Open
+                    </Link>
+                </div>
+                <p className="mt-2 text-[11px] text-cyan-900/80 dark:text-cyan-200/80">
+                    Generate practice questions, evaluate answers, and track prep history.
+                </p>
+            </div>
+
+            <div className="mb-4 rounded-lg border border-amber-200 dark:border-amber-900 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/20 p-3 shadow-sm">
+                <div className="flex items-center justify-between gap-2">
+                    <p className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">
+                        <Lightbulb size={12} /> Smart Doubt Resolver
+                    </p>
+                    <Link
+                        to="/doubt-resolver"
+                        className="rounded-md bg-amber-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-amber-700 transition-colors"
+                    >
+                        Open
+                    </Link>
+                </div>
+                <p className="mt-2 text-[11px] text-amber-900/80 dark:text-amber-200/80">
+                    Get root-cause guidance, 5-step hints, analogy, and save doubts for revision.
+                </p>
+            </div>
+
             {/* Custom Prompt Section */}
             <div className="mb-4">
                 <button onClick={togglePromptSection} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-left text-text-light dark:text-text-dark bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md focus:outline-none shadow-sm border border-border-light dark:border-border-dark" aria-expanded={isPromptSectionOpen}>
@@ -393,7 +444,7 @@ function LeftPanel({ isChatProcessing }) {
             </div>
 
             {/* User's Knowledge Base Section */}
-            <div className="flex-grow flex flex-col overflow-hidden">
+            <div className="mb-2">
                 <button onClick={toggleKnowledgeBaseSection} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-left text-text-light dark:text-text-dark bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md focus:outline-none shadow-sm border border-border-light dark:border-border-dark mb-2" aria-expanded={isKnowledgeBaseOpen}>
                     <span className="flex items-center gap-2"><FilePlus size={16} className="text-primary dark:text-primary-light" /> My Knowledge Base</span>
                     {isKnowledgeBaseOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -406,9 +457,9 @@ function LeftPanel({ isChatProcessing }) {
                             initial="closed"
                             animate="open"
                             exit="closed"
-                            className="flex-grow flex flex-col p-3 bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-md shadow-inner">
+                            className="p-3 bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-md shadow-inner">
                             <DocumentUpload onSourceAdded={handleSourceAdded}  />
-                            <div className="mt-3 flex-grow overflow-y-auto custom-scrollbar">
+                            <div className="mt-3 max-h-72 overflow-y-auto custom-scrollbar">
                                 <KnowledgeSourceList
                                     key={refreshKey}
                                     onSelectSource={selectDocumentForAnalysis}

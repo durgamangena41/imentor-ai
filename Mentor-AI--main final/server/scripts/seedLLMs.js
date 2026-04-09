@@ -9,47 +9,17 @@ const LLMConfiguration = require('../models/LLMConfiguration');
 // --- The Seed Data ---
 const llmSeedData = [
   // ===================================================================
-  // === GEMINI MODELS (Full Suite with 1.5 and 2.5 versions)      ===
+  // === GEMINI MODEL (Single standardized model)                  ===
   // ===================================================================
 
-  // 1. Gemini: The New Default - Fast & Modern
+  // 1. Gemini: Standardized single model across project
   {
-    modelId: "gemini-2.5-flash-latest",
+    modelId: "gemini-2.0-flash",
     provider: "gemini",
-    displayName: "Gemini 2.5 Flash (Default)",
-    description: "Next-gen performance for general chat, creative tasks, and summarization.",
-    isDefault: false,
-    strengths: ["chat", "creative", "summarization"],
-    subjectFocus: null
-  },
-  // 2. Gemini: The Ultimate Powerhouse for Code & Technical
-  {
-    modelId: "gemini-2.5-pro-latest",
-    provider: "gemini",
-    displayName: "Gemini 2.5 Pro (All rounder - for all tasks)",
-    description: "The most powerful model for complex coding, mathematics, and demanding technical queries.",
+    displayName: "Gemini 2.0 Flash (Default)",
+    description: "Standardized Gemini model for all Gemini tasks in this project.",
     isDefault: true,
-    strengths: ["code", "technical"], // Explicitly assigned to the most demanding tasks
-    subjectFocus: null
-  },
-  // 3. Gemini: Legacy Powerhouse for Large Context & Deep Reasoning
-  {
-    modelId: "gemini-1.5-pro-latest",
-    provider: "gemini",
-    displayName: "Gemini 1.5 Pro (Large Context)",
-    description: "A powerful model with a massive context window, ideal for deep reasoning over large documents.",
-    isDefault: false,
-    strengths: ["reasoning", "large_context"], // Assigned to its unique strengths
-    subjectFocus: null
-  },
-  // 4. Gemini: Legacy Fast Model (Fallback/Legacy Option)
-  {
-    modelId: "gemini-1.5-flash-latest",
-    provider: "gemini",
-    displayName: "Gemini 1.5 Flash (Legacy)",
-    description: "A solid and fast model for general-purpose tasks.",
-    isDefault: false,
-    strengths: [], // No specific strengths to ensure it's not auto-selected over 2.5 Flash
+    strengths: ["chat", "creative", "summarization", "code", "technical", "reasoning"],
     subjectFocus: null
   },
 

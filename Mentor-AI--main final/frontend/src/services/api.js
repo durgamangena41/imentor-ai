@@ -3,8 +3,13 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5001/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:2000/api",
 });
+
+const timetableBaseUrls = Array.from(new Set([
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:2000/api",
+  "http://localhost:2000/api",
+]));
 
 apiClient.interceptors.request.use(
   (config) => {
@@ -252,6 +257,30 @@ const api = {
       context,
     });
     return response.data;
+  },
+
+  generateTimetable: async (payload) => {
+    let lastError = null;
+
+    for (const baseUrl of timetableBaseUrls) {
+      try {
+        const response = await axios.post(`${baseUrl}/timetable/generate`, payload, {
+          headers: {
+            Authorization: localStorage.getItem("authToken")
+              ? `Bearer ${localStorage.getItem("authToken")}`
+              : undefined,
+          },
+        });
+        return response.data;
+      } catch (error) {
+        lastError = error;
+        if (error.response?.status !== 404) {
+          throw error;
+        }
+      }
+    }
+
+    throw lastError || new Error("Failed to generate timetable.");
   },
 
   updateModuleStatus: async (pathId, moduleId, status) => {
