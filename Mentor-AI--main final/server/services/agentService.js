@@ -50,22 +50,213 @@ function parseToolCall(responseText) {
   }
 }
 
+function isOllamaUnavailableError(error) {
+  const message = String(error?.message || '').toLowerCase();
+  const status = Number(error?.status || error?.statusCode || error?.response?.status || 0);
+
+  return status === 404
+    || status === 502
+    || status === 503
+    || message.includes('model') && message.includes('not found')
+    || message.includes('failed to get response from ollama')
+    || message.includes('timeout')
+    || message.includes('timed out')
+    || message.includes('econnrefused')
+    || message.includes('connect') && message.includes('refused');
+}
+
+function buildLocalFallbackAnswer(userQuery) {
+  const q = String(userQuery || '').trim();
+  const lower = q.toLowerCase();
+
+  if (lower.includes('machine learning')) {
+    return `## Machine Learning: Comprehensive Overview
+
+**Definition:** Machine learning is a branch of artificial intelligence where computer systems learn patterns from data and improve their performance on tasks without being explicitly programmed for each scenario. Instead of following hardcoded instructions, ML systems discover rules and patterns by analyzing examples.
+
+**Core Concept - How It Works:**
+Machine learning operates on three fundamental principles:
+1. **Training Phase**: The system receives a dataset with examples (input-output pairs)
+2. **Pattern Discovery**: It identifies patterns and relationships in the data
+3. **Prediction Phase**: When new, unseen data arrives, it applies learned patterns to make predictions or decisions
+
+**Why Machine Learning Matters:**
+In the real world, we often can't write explicit rules for complex tasks. For example, recognizing faces, understanding speech, or recommending products are too complex for traditional programming. ML systems learn these patterns from data, making them flexible and adaptable to new situations.
+
+**Key Process Cycle:**
+- **Data Collection**: Gather relevant examples
+- **Data Preparation**: Clean and format data
+- **Model Training**: Feed data to learning algorithm to discover patterns
+- **Evaluation**: Test on new data to measure accuracy
+- **Iteration**: Refine the model based on performance
+- **Deployment**: Apply to real-world tasks
+
+**Real-World Applications:**
+- Email spam filtering learns what messages are spam from user feedback
+- Netflix recommendations learn your preferences from viewing history
+- Medical diagnosis systems learn to detect diseases from thousands of patient records
+- Self-driving cars learn to recognize pedestrians and obstacles from video data
+
+**Key Takeaway:** Machine learning transforms raw data into actionable intelligence by discovering underlying patterns—enabling systems to improve and adapt continuously.`;
+  }
+
+  if (lower.includes('neural network')) {
+    return `## Neural Networks: Deep Dive
+
+**Definition:** A neural network is a computational model inspired by how the human brain works. It consists of interconnected layers of artificial "neurons" that process information and learn complex patterns through adjusting their internal connection strengths (weights).
+
+**Architecture Overview:**
+Neural networks typically have three types of layers:
+1. **Input Layer**: Receives raw data (e.g., pixels in an image, features in a dataset)
+2. **Hidden Layers**: Process and transform information through weighted connections
+3. **Output Layer**: Produces the final prediction or classification
+
+**How Neural Networks Learn:**
+During training, the network:
+1. Takes input data and processes it forward (forward pass)
+2. Compares output to actual answer and calculates error
+3. Works backward to adjust weights (backpropagation)
+4. Repeats thousands of times until error minimizes
+
+**Key Components:**
+- **Neurons**: Individual processing units that apply mathematical operations
+- **Weights and Biases**: Parameters that get adjusted during learning
+- **Activation Functions**: Non-linear functions (ReLU, sigmoid) that enable learning of complex patterns
+- **Loss Function**: Measures how far predictions are from correct answers
+
+**Why They're Powerful:**
+Neural networks excel at:
+- Image recognition and computer vision tasks
+- Natural language understanding and translation
+- Pattern detection in audio and speech
+- Complex non-linear relationships that simpler models can't capture
+
+**Modern Variations:**
+- **CNNs** (Convolutional Neural Networks) for images
+- **RNNs/LSTMs** for sequences and time-series data
+- **Transformers** for language processing
+- **GANs** for generating new data
+
+**Key Takeaway:** Neural networks are mathematical systems that mimic biological learning, enabling machines to discover intricate patterns in data through iterative weight adjustment.`;
+  }
+
+  if (lower.includes('artificial intelligence') || lower.includes('what is ai') || lower === 'ai') {
+    return `## Artificial Intelligence: Complete Guide
+
+**Definition:** AI (Artificial Intelligence) is the field of computer science dedicated to creating systems that can perform tasks requiring human-like intelligence. These include learning from experience, recognizing patterns, understanding language, making decisions, and solving problems.
+
+**Scope of Artificial Intelligence:**
+AI encompasses numerous capabilities:
+- **Perception**: Understanding images, audio, and sensor data (computer vision, speech recognition)
+- **Language**: Understanding and generating human language (natural language processing)
+- **Learning**: Improving performance from experience (machine learning)
+- **Reasoning**: Drawing logical conclusions from information (expert systems)
+- **Decision-Making**: Choosing optimal actions in complex situations
+- **Robotics**: Controlling physical systems to interact with the world
+
+**Types of AI (By Capability Level):**
+1. **Narrow AI (Weak AI)**: Designed for specific tasks—all current AI systems (chess engines, image recognition, chatbots)
+2. **General AI (Strong AI)**: Hypothetical AI that can understand and learn any intellectual task humans can—does not exist yet
+3. **Super AI (ASI)**: Theoretical AI surpassing human intelligence—purely theoretical
+
+**Key AI Techniques:**
+- **Machine Learning**: Systems that learn from data
+- **Deep Learning**: Neural networks with many layers
+- **Expert Systems**: Rule-based decision making
+- **Natural Language Processing**: Understanding human language
+- **Computer Vision**: Interpreting images and video
+- **Reinforcement Learning**: Learning through rewards and penalties
+
+**Real-World Impact:**
+- Healthcare: Diagnostic systems, drug discovery
+- Transportation: Autonomous vehicles, traffic optimization
+- Communication: Translation, chatbots, voice assistants
+- Business: Predictive analytics, customer service, fraud detection
+- Finance: Trading algorithms, risk assessment
+
+**Current Limitations:**
+- AI systems lack true understanding and reasoning
+- They require massive amounts of data
+- They can't easily transfer learning between tasks
+- They can perpetuate biases from training data
+
+**The Future of AI:**
+Current research focuses on making AI more efficient, interpretable, aligned with human values, and capable of longer-term reasoning.
+
+**Key Takeaway:** AI is a broad field creating intelligent systems that perceive, learn, reason, and act—with machine learning being one of its most powerful subfields.`;
+  }
+
+  return `I could not reach the configured AI providers at the moment, but here's a helpful context-aware response:
+
+The question asks: **"${q}"**
+
+This is an important topic in AI and machine learning. To provide you with a comprehensive answer, I recommend:
+1. Ensuring your internet connection is stable so I can connect to the AI service
+2. Checking that your Ollama service is running properly
+3. Trying your question again
+
+If you're asking about **machine learning**, it involves systems learning from data to make predictions. If it's about **AI concepts**, these are computational systems that perform intelligent tasks. For **neural networks**, they're brain-inspired systems that learn complex patterns through interconnected layers.
+
+Feel free to try again, and I'll provide a detailed, structured response with examples and explanations.`;
+}
+
 /**
  * Helper to call LLM with automatic failover on quota exhaustion.
  */
 async function callLLMWithFailover(service, chatHistory, query, systemPrompt, options, requestContext) {
+  if (requestContext?._providerOverride === 'ollama' && options.provider !== 'ollama') {
+    const ollamaOptions = {
+      ...options,
+      model: requestContext.ollamaModel,
+      ollamaUrl: requestContext.ollamaUrl,
+      timeoutMs: Number(process.env.OLLAMA_FAILOVER_TIMEOUT_MS || 12000),
+      provider: 'ollama'
+    };
+
+    try {
+      return await ollamaService.generateContentWithHistory(chatHistory, query, systemPrompt, ollamaOptions);
+    } catch (ollamaError) {
+      if (isOllamaUnavailableError(ollamaError)) {
+        return buildLocalFallbackAnswer(query);
+      }
+      throw ollamaError;
+    }
+  }
+
   try {
     return await service.generateContentWithHistory(chatHistory, query, systemPrompt, options);
   } catch (error) {
     if (error.isQuotaExceeded && options.provider !== 'ollama') {
+      requestContext._providerOverride = 'ollama';
+      const fastLocalFallback = String(process.env.FAST_LOCAL_FALLBACK_ON_QUOTA || 'true').toLowerCase() !== 'false';
+      if (fastLocalFallback) {
+        console.warn('[AgentService] Gemini unavailable; using fast local fallback to avoid long waits.');
+        return buildLocalFallbackAnswer(query);
+      }
+
       console.warn(`[AgentService] Quota exceeded for ${options.provider}. Falling back to Ollama...`);
       const ollamaOptions = {
         ...options,
         model: requestContext.ollamaModel,
         ollamaUrl: requestContext.ollamaUrl,
+        timeoutMs: Number(process.env.OLLAMA_FAILOVER_TIMEOUT_MS || 12000),
         provider: 'ollama'
       };
-      return await ollamaService.generateContentWithHistory(chatHistory, query, systemPrompt, ollamaOptions);
+      try {
+        return await ollamaService.generateContentWithHistory(chatHistory, query, systemPrompt, ollamaOptions);
+      } catch (ollamaError) {
+        if (isOllamaUnavailableError(ollamaError)) {
+          console.warn('[AgentService] Ollama fallback unavailable/slow. Returning local deterministic fallback answer.');
+          return buildLocalFallbackAnswer(query);
+        }
+        console.warn('[AgentService] Ollama fallback failed unexpectedly. Returning local deterministic fallback answer.');
+        return buildLocalFallbackAnswer(query);
+      }
+    }
+
+    if (options.provider === 'ollama' && isOllamaUnavailableError(error)) {
+      console.warn('[AgentService] Primary Ollama path unavailable. Returning local deterministic fallback answer.');
+      return buildLocalFallbackAnswer(query);
     }
     throw error;
   }

@@ -6,6 +6,7 @@ const os = require('os');
 const path = require('path');
 const pdfParse = require('pdf-parse');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { hasGeminiApiKeys, isGeminiRateLimitError, runWithGeminiKeyRotation } = require('../services/geminiKeyRotationService');
 
 const { crawlUrl } = require('../services/webCrawlerService');
 
@@ -21,7 +22,6 @@ const DEFAULT_GEMINI_MODELS = [
   'gemini-2.0-flash',
 ].filter(Boolean);
 const PYTHON_RAG_URL = process.env.PYTHON_RAG_SERVICE_URL;
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const TEMP_DIR = path.join(os.tmpdir(), 'imentor-ai-summarizer');
 
 const FORMAT_LABELS = {
@@ -255,11 +255,6 @@ function createLocalSummary(text, format, length) {
   return createFallbackBullets(normalizedText, length);
 }
 
-function isGeminiRateLimitError(error) {
-  const message = String(error?.message || '');
-  return /429 Too Many Requests|quota|rate limit|resource exhausted|Please retry in/i.test(message);
-}
-
 async function ensureTempDir() {
   await fs.mkdir(TEMP_DIR, { recursive: true });
 }
@@ -379,23 +374,24 @@ ${text}`;
 }
 
 async function summarizeWithGemini(text, format, length) {
-  if (!GEMINI_API_KEY) {
-    throw new Error('GEMINI_API_KEY is not configured.');
+  if (!hasGeminiApiKeys()) {
+    throw new Error('Gemini API keys are not configured. Set GEMINI_API_KEY_1..GEMINI_API_KEY_5 (or GEMINI_API_KEY).');
   }
-
-  const generativeAI = new GoogleGenerativeAI(GEMINI_API_KEY);
   const prompt = buildPrompt({ text, format, length });
 
   let lastError = null;
   for (const modelName of DEFAULT_GEMINI_MODELS) {
     try {
-      const model = generativeAI.getGenerativeModel({ model: modelName });
-      const result = await model.generateContent({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.3,
-          maxOutputTokens: 2048,
-        },
+      const result = await runWithGeminiKeyRotation(async (apiKey) => {
+        const generativeAI = new GoogleGenerativeAI(apiKey);
+        const model = generativeAI.getGenerativeModel({ model: modelName });
+        return model.generateContent({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.3,
+            maxOutputTokens: 2048,
+          },
+        });
       });
 
       const rawText = result.response.text();
@@ -437,7 +433,7 @@ async function summarizeTextPayload(text, format, length) {
   try {
     return await summarizeWithGemini(trimmedText, format, length);
   } catch (error) {
-    if (!GEMINI_API_KEY || isGeminiRateLimitError(error)) {
+    if (!hasGeminiApiKeys() || isGeminiRateLimitError(error)) {
       return createLocalSummary(trimmedText, format, length);
     }
 
@@ -463,7 +459,7 @@ router.post('/text', async (req, res) => {
       format,
       length,
       summary,
-      generationMode: typeof summary === 'string' ? (GEMINI_API_KEY ? 'gemini' : 'local') : 'local',
+      generationMode: typeof summary === 'string' ? (hasGeminiApiKeys() ? 'gemini' : 'local') : 'local',
     });
   } catch (error) {
     return res.status(500).json({ message: error.message || 'Failed to summarize text.' });
@@ -506,7 +502,7 @@ router.post('/file', upload.single('file'), async (req, res) => {
       format,
       length,
       summary,
-      generationMode: typeof summary === 'string' ? (GEMINI_API_KEY ? 'gemini' : 'local') : 'local',
+      generationMode: typeof summary === 'string' ? (hasGeminiApiKeys() ? 'gemini' : 'local') : 'local',
       extractedCharacters: extractedText.length,
       filename: file.originalname,
     });

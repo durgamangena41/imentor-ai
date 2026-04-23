@@ -19,6 +19,9 @@ import {
     TimerReset,
     BookOpen,
     BrainCircuit,
+    Library,
+    X,
+    Trash2,
 } from 'lucide-react';
 
 const dayToneStyles = {
@@ -52,6 +55,7 @@ function TimetablePage() {
     const [savedPlans, setSavedPlans] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [isSavedPlansPanelOpen, setIsSavedPlansPanelOpen] = useState(false);
 
     useEffect(() => {
         const prefilledGoal = location.state?.prefilledGoal || selectedSubject || '';
@@ -136,6 +140,14 @@ function TimetablePage() {
     const removeSavedPlan = (planId) => {
         persistSavedPlans((currentPlans) => currentPlans.filter((plan) => plan.id !== planId));
         toast.success('Saved plan removed.');
+    };
+
+    const formatPlanDate = (value) => {
+        try {
+            return new Date(value).toLocaleString();
+        } catch {
+            return 'Unknown date';
+        }
     };
 
     const handleExportTimetable = () => {
@@ -311,6 +323,16 @@ function TimetablePage() {
                         <ChevronLeft size={16} />
                         Back to Main App
                     </Link>
+
+                    <button
+                        type="button"
+                        onClick={() => setIsSavedPlansPanelOpen(true)}
+                        className="inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-400/10 px-4 py-2 text-sm font-medium text-cyan-100 transition hover:border-cyan-200/60 hover:bg-cyan-400/20"
+                    >
+                        <Library size={16} />
+                        Saved Timetables
+                        <span className="rounded-full bg-cyan-200/20 px-2 py-0.5 text-xs font-semibold text-cyan-50">{savedPlans.length}</span>
+                    </button>
                 </div>
             </header>
 
@@ -463,18 +485,36 @@ function TimetablePage() {
                                     Save Current Plan
                                 </Button>
 
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    onClick={() => setIsSavedPlansPanelOpen(true)}
+                                    className="w-full rounded-2xl py-3"
+                                >
+                                    View Saved Timetables ({savedPlans.length})
+                                </Button>
+
                                 <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs text-slate-300">
                                     <span>Subjects tracked</span>
                                     <span className="font-semibold text-white">{subjectCount}</span>
                                 </div>
 
                                 <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
-                                    <div className="mb-2 text-xs uppercase tracking-[0.2em] text-slate-400">Saved Plans</div>
+                                    <div className="mb-2 flex items-center justify-between">
+                                        <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Saved Plans</div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsSavedPlansPanelOpen(true)}
+                                            className="text-[11px] font-semibold text-cyan-200 transition hover:text-cyan-100"
+                                        >
+                                            Open full list
+                                        </button>
+                                    </div>
                                     {savedPlans.length === 0 ? (
                                         <p className="text-xs text-slate-400">No saved plans yet. Generate or save one to see it here.</p>
                                     ) : (
                                         <div className="max-h-56 space-y-2 overflow-y-auto pr-1 custom-scrollbar">
-                                            {savedPlans.map((planItem) => (
+                                            {savedPlans.slice(0, 5).map((planItem) => (
                                                 <div
                                                     key={planItem.id}
                                                     className="rounded-xl border border-white/10 bg-slate-950/50 p-2"
@@ -487,7 +527,7 @@ function TimetablePage() {
                                                         <div className="text-sm font-semibold text-white line-clamp-1">{planItem.title}</div>
                                                         <div className="mt-1 text-xs text-slate-400 line-clamp-2">{planItem.goal}</div>
                                                         <div className="mt-1 text-[11px] text-slate-500">
-                                                            {new Date(planItem.createdAt).toLocaleString()}
+                                                            {formatPlanDate(planItem.createdAt)}
                                                         </div>
                                                     </button>
                                                     <button
@@ -499,6 +539,11 @@ function TimetablePage() {
                                                     </button>
                                                 </div>
                                             ))}
+                                            {savedPlans.length > 5 && (
+                                                <p className="px-1 text-[11px] text-slate-400">
+                                                    Showing 5 of {savedPlans.length}. Open full list to view all saved timetables.
+                                                </p>
+                                            )}
                                         </div>
                                     )}
                                 </div>
@@ -684,6 +729,85 @@ function TimetablePage() {
                     </div>
                 </div>
             </main>
+
+            <AnimatePresence>
+                {isSavedPlansPanelOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm"
+                        onClick={() => setIsSavedPlansPanelOpen(false)}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, y: 20, scale: 0.97 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 20, scale: 0.97 }}
+                            transition={{ duration: 0.2 }}
+                            className="w-full max-w-3xl rounded-3xl border border-white/15 bg-slate-900 p-5 shadow-2xl shadow-black/50"
+                            onClick={(event) => event.stopPropagation()}
+                        >
+                            <div className="mb-4 flex items-center justify-between border-b border-white/10 pb-4">
+                                <div>
+                                    <p className="text-xs uppercase tracking-[0.2em] text-cyan-200/80">Timetable Library</p>
+                                    <h3 className="mt-1 text-xl font-semibold text-white">Saved Timetables</h3>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setIsSavedPlansPanelOpen(false)}
+                                    className="rounded-xl border border-white/15 bg-white/5 p-2 text-slate-200 transition hover:bg-white/10"
+                                    aria-label="Close saved timetables panel"
+                                >
+                                    <X size={18} />
+                                </button>
+                            </div>
+
+                            {savedPlans.length === 0 ? (
+                                <div className="rounded-2xl border border-dashed border-white/20 bg-white/5 p-8 text-center">
+                                    <Library className="mx-auto h-10 w-10 text-slate-400" />
+                                    <p className="mt-3 text-sm text-slate-300">No saved timetables yet.</p>
+                                    <p className="mt-1 text-xs text-slate-400">Generate a timetable and click Save Current Plan to keep it here.</p>
+                                </div>
+                            ) : (
+                                <div className="max-h-[60vh] space-y-3 overflow-y-auto pr-1 custom-scrollbar">
+                                    {savedPlans.map((planItem) => (
+                                        <div key={planItem.id} className="rounded-2xl border border-white/10 bg-slate-950/60 p-4">
+                                            <div className="flex flex-wrap items-start justify-between gap-3">
+                                                <div className="min-w-0 flex-1">
+                                                    <h4 className="line-clamp-1 text-base font-semibold text-white">{planItem.title}</h4>
+                                                    <p className="mt-1 line-clamp-2 text-sm text-slate-300">{planItem.goal}</p>
+                                                    <p className="mt-2 text-xs text-slate-500">Saved on {formatPlanDate(planItem.createdAt)}</p>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <Button
+                                                        type="button"
+                                                        size="sm"
+                                                        onClick={() => {
+                                                            openSavedPlan(planItem);
+                                                            setIsSavedPlansPanelOpen(false);
+                                                        }}
+                                                        className="rounded-xl"
+                                                    >
+                                                        Open
+                                                    </Button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeSavedPlan(planItem.id)}
+                                                        className="inline-flex items-center gap-1 rounded-xl border border-rose-400/30 px-3 py-2 text-xs font-medium text-rose-200 transition hover:bg-rose-500/20"
+                                                    >
+                                                        <Trash2 size={13} />
+                                                        Remove
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

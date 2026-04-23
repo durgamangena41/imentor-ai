@@ -558,6 +558,20 @@ const api = {
     const response = await apiClient.get('/gamification/reports');
     return response.data;
   },
+  getEarnedBadges: async () => {
+    const response = await apiClient.get('/gamification/badges');
+    return response.data;
+  },
+  getBadgeCollection: async ({ filter = 'all', category = 'all', sortBy = 'progress' } = {}) => {
+    const response = await apiClient.get('/gamification/badges/all', {
+      params: { filter, category, sortBy }
+    });
+    return response.data;
+  },
+  getBadgeSummary: async () => {
+    const response = await apiClient.get('/gamification/badges/summary');
+    return response.data;
+  },
   submitChallengeAnswer: async (challengeId, answer) => {
     const response = await apiClient.post(`/gamification/challenge/submit`, { bountyId: challengeId, answer });
     return response.data;

@@ -426,13 +426,15 @@ const ChallengesPage = () => {
                 </div>
 
                 <div className="flex justify-end mb-6 items-center">
-                    <button
+                    <Button
                         onClick={() => setForceShowReport(!forceShowReport)}
-                        className="mr-3 px-3 py-2 text-xs font-mono text-primary/50 hover:text-primary transition-colors border border-primary/20 rounded-lg"
+                        variant="secondary"
+                        className="mr-3"
+                        rightIcon={<span aria-hidden="true">📊</span>}
                         title="Toggle Report View (Demo)"
                     >
                         {forceShowReport ? "Show Active Challenges" : "Preview Mastery Report"}
-                    </button>
+                    </Button>
 
                     <Button
                         onClick={handleGenerateQuiz}

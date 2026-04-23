@@ -2,23 +2,23 @@ const express = require('express');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const SavedDoubt = require('../models/SavedDoubt');
 const { logger, auditLog } = require('../utils/logger');
+const { runWithGeminiKeyRotation } = require('../services/geminiKeyRotationService');
 
 const router = express.Router();
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const MODEL_CANDIDATES = Array.from(new Set([
     process.env.GEMINI_MODEL,
     process.env.GEMINI_MODEL_NAME,
     'gemini-2.0-flash',
 ].filter(Boolean)));
 
-function getGeminiModel(modelName) {
-    if (!GEMINI_API_KEY) {
+function getGeminiModel(modelName, apiKey) {
+    if (!apiKey) {
         throw new Error('Gemini API key is not configured.');
     }
 
     const normalizedModelName = String(modelName || '').replace(/^models\//, '');
-    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+    const genAI = new GoogleGenerativeAI(apiKey);
     return genAI.getGenerativeModel({ model: normalizedModelName });
 }
 
@@ -34,7 +34,9 @@ function isModelUnavailableError(error) {
         || text.includes('quota')
         || text.includes('rate limit')
         || text.includes('too many requests')
-        || text.includes('high demand');
+        || text.includes('high demand')
+        || text.includes('rpm limit')
+        || text.includes('all gemini keys');
 }
 
 function localGenerateDoubtResolution(question, subject, level) {
@@ -177,8 +179,10 @@ async function generateWithFallback(prompt) {
 
     for (const modelName of MODEL_CANDIDATES) {
         try {
-            const model = getGeminiModel(modelName);
-            const result = await model.generateContent(prompt);
+            const result = await runWithGeminiKeyRotation(async (apiKey) => {
+                const model = getGeminiModel(modelName, apiKey);
+                return model.generateContent(prompt);
+            });
             const text = result.response?.text() || '';
             return { text, modelName };
         } catch (error) {

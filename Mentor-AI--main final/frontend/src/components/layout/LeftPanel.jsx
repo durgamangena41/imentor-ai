@@ -8,7 +8,7 @@ import KnowledgeSourceList from '../documents/KnowledgeSourceList.jsx';
 import SubjectList from '../documents/SubjectList.jsx';
 import {
     PanelLeftClose, ChevronDown, ChevronUp, FilePlus, Settings2,
-    Bot, BookOpen, Lightbulb, Library, Timer, Flame, Clock3, HeartPulse, Award, StickyNote, Users, Sparkles
+    Bot, BookOpen, Lightbulb, Library, Timer, Flame, Clock3, Award, Users, Sparkles
 } from 'lucide-react';
 import IconButton from '../core/IconButton.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -258,9 +258,9 @@ function LeftPanel({ isChatProcessing }) {
                 />
             </div>
 
-            <div className="mb-4 rounded-lg border border-border-light dark:border-border-dark bg-gray-50 dark:bg-gray-800 p-3 shadow-sm">
+            <div className="mb-4 rounded-lg border border-gray-400 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 p-3 shadow-sm">
                 <div className="flex items-center justify-between gap-2">
-                    <p className="text-xs font-bold uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">Focus Mode</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-text-light dark:text-text-dark">🔵 Focus Mode</p>
                     <Link
                         to="/focus"
                         className="rounded-md bg-primary px-2.5 py-1 text-xs font-semibold text-white hover:bg-primary-dark transition-colors"
@@ -270,129 +270,78 @@ function LeftPanel({ isChatProcessing }) {
                 </div>
                 <div className="mt-3 grid grid-cols-3 gap-2 text-[11px]">
                     <div className="rounded-md bg-white dark:bg-gray-900 border border-border-light dark:border-border-dark p-2">
-                        <p className="flex items-center gap-1 text-text-muted-light dark:text-text-muted-dark"><Timer size={12} /> Today</p>
+                        <p className="flex items-center gap-1 text-text-light dark:text-text-dark"><Timer size={12} /> Today</p>
                         <p className="mt-1 text-sm font-bold text-text-light dark:text-text-dark">{focusStats.todaySessionsCount}</p>
                     </div>
                     <div className="rounded-md bg-white dark:bg-gray-900 border border-border-light dark:border-border-dark p-2">
-                        <p className="flex items-center gap-1 text-text-muted-light dark:text-text-muted-dark"><Flame size={12} /> Streak</p>
+                        <p className="flex items-center gap-1 text-text-light dark:text-text-dark"><Flame size={12} /> Streak</p>
                         <p className="mt-1 text-sm font-bold text-text-light dark:text-text-dark">{focusStats.currentStreak}d</p>
                     </div>
                     <div className="rounded-md bg-white dark:bg-gray-900 border border-border-light dark:border-border-dark p-2">
-                        <p className="flex items-center gap-1 text-text-muted-light dark:text-text-muted-dark"><Clock3 size={12} /> Week</p>
+                        <p className="flex items-center gap-1 text-text-light dark:text-text-dark"><Clock3 size={12} /> Week</p>
                         <p className="mt-1 text-sm font-bold text-text-light dark:text-text-dark">{weeklyHours}h</p>
                     </div>
                 </div>
             </div>
 
-            <div className="mb-4 rounded-lg border border-emerald-200 dark:border-emerald-900 bg-gradient-to-br from-emerald-50 to-cyan-50 dark:from-emerald-950/30 dark:to-cyan-950/20 p-3 shadow-sm">
+            <div className="mb-4 rounded-lg border border-gray-400 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 p-3 shadow-sm">
                 <div className="flex items-center justify-between gap-2">
-                    <p className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
-                        <HeartPulse size={12} /> Wellness
+                    <p className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-text-light dark:text-text-dark">
+                        💙 Wellness
                     </p>
                     <Link
                         to="/challenges"
-                        className="rounded-md bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-700 transition-colors"
+                        className="rounded-md bg-primary px-2.5 py-1 text-xs font-semibold text-white hover:bg-primary-dark transition-colors"
                     >
                         Open Challenges
                     </Link>
                 </div>
-                <p className="mt-2 text-[11px] text-emerald-900/80 dark:text-emerald-200/80">
+                <p className="mt-2 text-[11px] text-text-light dark:text-text-dark">
                     Quick habits for energy, focus, and consistency.
                 </p>
                 <div className="mt-3 grid grid-cols-2 gap-2 text-[11px]">
-                    <div className="rounded-md bg-white/80 dark:bg-gray-900/80 border border-emerald-200/70 dark:border-emerald-900 p-2">
-                        <p className="text-emerald-700 dark:text-emerald-300">XP Today</p>
+                    <div className="rounded-md bg-white dark:bg-gray-900 border border-border-light dark:border-border-dark p-2">
+                        <p className="text-text-light dark:text-text-dark">XP Today</p>
                         <p className="mt-1 text-sm font-bold text-text-light dark:text-text-dark">{wellnessStats.wellnessXpToday}</p>
                     </div>
-                    <div className="rounded-md bg-white/80 dark:bg-gray-900/80 border border-emerald-200/70 dark:border-emerald-900 p-2">
-                        <p className="text-emerald-700 dark:text-emerald-300">Done Today</p>
+                    <div className="rounded-md bg-white dark:bg-gray-900 border border-border-light dark:border-border-dark p-2">
+                        <p className="text-text-light dark:text-text-dark">Done Today</p>
                         <p className="mt-1 text-sm font-bold text-text-light dark:text-text-dark">{wellnessStats.activitiesCompletedToday}</p>
                     </div>
-                    <div className="rounded-md bg-white/80 dark:bg-gray-900/80 border border-emerald-200/70 dark:border-emerald-900 p-2">
-                        <p className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-300"><Award size={11} /> Total XP</p>
+                    <div className="rounded-md bg-white dark:bg-gray-900 border border-border-light dark:border-border-dark p-2">
+                        <p className="inline-flex items-center gap-1 text-text-light dark:text-text-dark"><Award size={11} /> Total XP</p>
                         <p className="mt-1 text-sm font-bold text-text-light dark:text-text-dark">{wellnessStats.totalXpFromWellness}</p>
                     </div>
-                    <div className="rounded-md bg-white/80 dark:bg-gray-900/80 border border-emerald-200/70 dark:border-emerald-900 p-2">
-                        <p className="text-emerald-700 dark:text-emerald-300">All Activities</p>
+                    <div className="rounded-md bg-white dark:bg-gray-900 border border-border-light dark:border-border-dark p-2">
+                        <p className="text-text-light dark:text-text-dark">All Activities</p>
                         <p className="mt-1 text-sm font-bold text-text-light dark:text-text-dark">{wellnessStats.totalActivitiesCompleted}</p>
                     </div>
                 </div>
-                <p className="mt-2 text-[11px] text-emerald-900/80 dark:text-emerald-200/80">
+                <p className="mt-2 text-[11px] text-text-light dark:text-text-dark">
                     Streak: {wellnessStats.weeklyStreakDays}d · Goal: {wellnessStats.dailyGoalProgress}/{wellnessStats.dailyGoal}
                 </p>
             </div>
 
-            <div className="mb-4 rounded-lg border border-indigo-200 dark:border-indigo-900 bg-gradient-to-br from-indigo-50 to-sky-50 dark:from-indigo-950/30 dark:to-sky-950/20 p-3 shadow-sm">
+            <div className="mb-4 rounded-lg border border-gray-400 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 p-3 shadow-sm">
                 <div className="flex items-center justify-between gap-2">
-                    <p className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-indigo-800 dark:text-indigo-300">
-                        <StickyNote size={12} /> Smart Notepad
+                    <p className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-text-light dark:text-text-dark">
+                        📘 Smart Notepad
                     </p>
                     <Link
                         to="/notepad"
-                        className="rounded-md bg-indigo-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors"
+                        className="rounded-md bg-primary px-2.5 py-1 text-xs font-semibold text-white hover:bg-primary-dark transition-colors"
                     >
                         Open
                     </Link>
                 </div>
-                <p className="mt-2 text-[11px] text-indigo-900/80 dark:text-indigo-200/80">
+                <p className="mt-2 text-[11px] text-text-light dark:text-text-dark">
                     Rich notes plus calendar tasks in one focused workspace.
-                </p>
-            </div>
-
-            <div className="mb-4 rounded-lg border border-cyan-200 dark:border-cyan-900 bg-gradient-to-br from-cyan-50 to-slate-50 dark:from-cyan-950/30 dark:to-slate-950/20 p-3 shadow-sm">
-                <div className="flex items-center justify-between gap-2">
-                    <p className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-cyan-800 dark:text-cyan-300">
-                        <Sparkles size={12} /> AI Summarizer
-                    </p>
-                    <Link
-                        to="/summarizer"
-                        className="rounded-md bg-cyan-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-cyan-700 transition-colors"
-                    >
-                        Open
-                    </Link>
-                </div>
-                <p className="mt-2 text-[11px] text-cyan-900/80 dark:text-cyan-200/80">
-                    Paste text, upload a file, or summarize a URL in multiple formats.
-                </p>
-            </div>
-
-            <div className="mb-4 rounded-lg border border-cyan-200 dark:border-cyan-900 bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950/30 dark:to-blue-950/20 p-3 shadow-sm">
-                <div className="flex items-center justify-between gap-2">
-                    <p className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-cyan-800 dark:text-cyan-300">
-                        <BookOpen size={12} /> Interview & Exam Prep
-                    </p>
-                    <Link
-                        to="/prep-mode"
-                        className="rounded-md bg-cyan-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-cyan-700 transition-colors"
-                    >
-                        Open
-                    </Link>
-                </div>
-                <p className="mt-2 text-[11px] text-cyan-900/80 dark:text-cyan-200/80">
-                    Generate practice questions, evaluate answers, and track prep history.
-                </p>
-            </div>
-
-            <div className="mb-4 rounded-lg border border-amber-200 dark:border-amber-900 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/20 p-3 shadow-sm">
-                <div className="flex items-center justify-between gap-2">
-                    <p className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">
-                        <Lightbulb size={12} /> Smart Doubt Resolver
-                    </p>
-                    <Link
-                        to="/doubt-resolver"
-                        className="rounded-md bg-amber-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-amber-700 transition-colors"
-                    >
-                        Open
-                    </Link>
-                </div>
-                <p className="mt-2 text-[11px] text-amber-900/80 dark:text-amber-200/80">
-                    Get root-cause guidance, 5-step hints, analogy, and save doubts for revision.
                 </p>
             </div>
 
             {/* Custom Prompt Section */}
             <div className="mb-4">
-                <button onClick={togglePromptSection} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-left text-text-light dark:text-text-dark bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md focus:outline-none shadow-sm border border-border-light dark:border-border-dark" aria-expanded={isPromptSectionOpen}>
+                <button onClick={togglePromptSection} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-left text-text-light dark:text-text-dark bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md focus:outline-none shadow-sm border border-gray-400 dark:border-gray-600" aria-expanded={isPromptSectionOpen}>
                     <span className="flex items-center gap-2"><SelectedPresetIcon size={16} className="text-primary dark:text-primary-light" /> Custom Prompt</span>
                     {isPromptSectionOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                 </button>
@@ -418,7 +367,7 @@ function LeftPanel({ isChatProcessing }) {
 
             {/* Admin Subjects Section */}
             <div className="mb-4">
-                <button onClick={toggleSubjectSection} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-left text-text-light dark:text-text-dark bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md focus:outline-none shadow-sm border border-border-light dark:border-border-dark" aria-expanded={isSubjectSectionOpen}>
+                <button onClick={toggleSubjectSection} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-left text-text-light dark:text-text-dark bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md focus:outline-none shadow-sm border border-gray-400 dark:border-gray-600" aria-expanded={isSubjectSectionOpen}>
                     <span className="flex items-center gap-2"><Library size={16} className="text-primary dark:text-primary-light" /> Admin Subjects</span>
                     {isSubjectSectionOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                 </button>
@@ -445,7 +394,7 @@ function LeftPanel({ isChatProcessing }) {
 
             {/* User's Knowledge Base Section */}
             <div className="mb-2">
-                <button onClick={toggleKnowledgeBaseSection} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-left text-text-light dark:text-text-dark bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md focus:outline-none shadow-sm border border-border-light dark:border-border-dark mb-2" aria-expanded={isKnowledgeBaseOpen}>
+                <button onClick={toggleKnowledgeBaseSection} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-left text-text-light dark:text-text-dark bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md focus:outline-none shadow-sm border border-gray-400 dark:border-gray-600 mb-2" aria-expanded={isKnowledgeBaseOpen}>
                     <span className="flex items-center gap-2"><FilePlus size={16} className="text-primary dark:text-primary-light" /> My Knowledge Base</span>
                     {isKnowledgeBaseOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                 </button>

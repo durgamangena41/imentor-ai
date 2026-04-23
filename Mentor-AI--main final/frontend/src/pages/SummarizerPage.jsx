@@ -161,8 +161,8 @@ function SummarizerPage() {
   const outputText = format === 'tweet' ? tweetText : summaryMarkdown;
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.22),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(16,185,129,0.18),_transparent_28%),linear-gradient(180deg,_#07111f_0%,_#0b1220_45%,_#050816_100%)] text-slate-100">
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-6 sm:px-6 lg:px-8">
+    <div className="h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.22),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(16,185,129,0.18),_transparent_28%),linear-gradient(180deg,_#07111f_0%,_#0b1220_45%,_#050816_100%)] text-slate-100">
+      <div className="mx-auto flex h-full min-h-0 w-full max-w-7xl flex-col px-4 py-6 sm:px-6 lg:px-8">
         <div className="mb-6 flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-cyan-300">iMentor AI</p>
@@ -174,8 +174,9 @@ function SummarizerPage() {
           </Link>
         </div>
 
-        <div className="grid flex-1 grid-cols-1 gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-          <section className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 shadow-2xl backdrop-blur-xl">
+        <div className="min-h-0 flex-1 overflow-y-auto custom-scrollbar">
+          <div className="grid min-h-0 grid-cols-1 gap-6 pb-6 xl:grid-cols-[1.05fr_0.95fr]">
+            <section className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 shadow-2xl backdrop-blur-xl">
             <div className="mb-5 flex gap-2 rounded-2xl bg-black/20 p-2">
               {INPUT_TABS.map((tab) => (
                 <button
@@ -282,9 +283,9 @@ function SummarizerPage() {
             >
               <Sparkles size={18} /> {isLoading ? 'Summarizing...' : 'Summarize'}
             </button>
-          </section>
+            </section>
 
-          <section className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 shadow-2xl backdrop-blur-xl">
+            <section className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 shadow-2xl backdrop-blur-xl">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Output</p>
@@ -344,7 +345,8 @@ function SummarizerPage() {
                 <div className="prose prose-invert max-w-none prose-headings:text-white prose-p:text-slate-200 prose-li:text-slate-200" dangerouslySetInnerHTML={renderMarkdown(outputText)} />
               </div>
             )}
-          </section>
+            </section>
+          </div>
         </div>
       </div>
     </div>

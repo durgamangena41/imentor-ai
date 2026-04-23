@@ -13,6 +13,7 @@ const User = require('../models/User');
 const geminiService = require('./geminiService');
 const ollamaService = require('./ollamaService');
 const { checkOllamaHealth } = require('./ollamaHealthService');
+const { runWithGeminiKeyRotation } = require('./geminiKeyRotationService');
 
 async function solveBountyInternal(userId, bountyId) {
     try {
@@ -223,14 +224,21 @@ async function getAdaptiveDifficulty(userId, topic) {
 async function generateQuizChallenge(userId, topic) {
     try {
         const user = userId ? await User.findById(userId).select('+encryptedApiKey') : null;
-        let apiKey = process.env.GEMINI_API_KEY;
-        if (user && user.encryptedApiKey) apiKey = decrypt(user.encryptedApiKey);
+        const userApiKey = user && user.encryptedApiKey ? decrypt(user.encryptedApiKey) : null;
+        const hasSharedGeminiKeys = Boolean(
+            process.env.GEMINI_API_KEY_1
+            || process.env.GEMINI_API_KEY_2
+            || process.env.GEMINI_API_KEY_3
+            || process.env.GEMINI_API_KEY_4
+            || process.env.GEMINI_API_KEY_5
+            || process.env.GEMINI_API_KEY
+        );
 
         let questions = null;
         const adaptiveDifficulty = await getAdaptiveDifficulty(userId, topic);
         const xpByDifficulty = { Easy: 70, Medium: 100, Hard: 130 };
 
-        if (!apiKey) {
+        if (!hasSharedGeminiKeys && !userApiKey) {
             questions = buildFallbackQuizQuestions(topic);
         }
 
@@ -244,10 +252,24 @@ async function generateQuizChallenge(userId, topic) {
                 if (isOllamaUp) {
                     responseText = await ollamaService.generateContentWithHistory([], prompt, null, { model: user?.ollamaModel || process.env.OLLAMA_DEFAULT_MODEL, ollamaUrl });
                 } else {
-                    responseText = await geminiService.generateContentWithHistory([], prompt, null, { apiKey: apiKey });
+                    if (hasSharedGeminiKeys) {
+                        responseText = await runWithGeminiKeyRotation(async (apiKey) => {
+                            const result = await geminiService.generateContentWithHistory([], prompt, null, { apiKey });
+                            return result;
+                        });
+                    } else if (userApiKey) {
+                        responseText = await geminiService.generateContentWithHistory([], prompt, null, { apiKey: userApiKey });
+                    }
                 }
             } else {
-                responseText = await geminiService.generateContentWithHistory([], prompt, null, { apiKey: apiKey });
+                if (hasSharedGeminiKeys) {
+                    responseText = await runWithGeminiKeyRotation(async (apiKey) => {
+                        const result = await geminiService.generateContentWithHistory([], prompt, null, { apiKey });
+                        return result;
+                    });
+                } else if (userApiKey) {
+                    responseText = await geminiService.generateContentWithHistory([], prompt, null, { apiKey: userApiKey });
+                }
             }
 
             let quizData = null;
@@ -255,8 +277,13 @@ async function generateQuizChallenge(userId, topic) {
                 quizData = JSON.parse(responseText);
             } catch (parseErr) {
                 const m = (responseText || '').match(/\{[\s\S]*\}/);
-                if (m) quizData = JSON.parse(m[0]);
-                else throw parseErr;
+                if (m) {
+                    try {
+                        quizData = JSON.parse(m[0]);
+                    } catch {
+                        quizData = null;
+                    }
+                }
             }
 
             if (Array.isArray(quizData?.questions) && quizData.questions.length > 0) {
@@ -282,7 +309,27 @@ async function generateQuizChallenge(userId, topic) {
 
     } catch (error) {
         console.error("Error creating quiz challenge:", error);
-        return null;
+
+        try {
+            const fallbackQuestions = buildFallbackQuizQuestions(topic);
+            const fallbackDifficulty = await getAdaptiveDifficulty(userId, topic);
+            const fallbackBounty = new Bounty({
+                userId,
+                topic,
+                type: 'Quiz',
+                difficulty: fallbackDifficulty,
+                xpReward: ({ Easy: 70, Medium: 100, Hard: 130 }[fallbackDifficulty] || 100),
+                context: `Fallback assessment for ${topic}`,
+                quizData: fallbackQuestions
+            });
+
+            await fallbackBounty.save();
+            logger.info(`Generated fallback QUIZ bounty for user ${userId} on topic ${topic}`);
+            return fallbackBounty;
+        } catch (fallbackError) {
+            console.error("Error creating fallback quiz challenge:", fallbackError);
+            return null;
+        }
     }
 }
 

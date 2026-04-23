@@ -1,8 +1,8 @@
 // frontend/src/components/learning/StudyPlanPage.jsx - REDESIGNED WITH PREMIUM UI
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useAppState } from '../../contexts/AppStateContext.jsx';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Home, Plus, Loader2, AlertTriangle, CheckCircle, Lock, Circle, GraduationCap, FileText, Globe, Code, BookMarked, ChevronLeft, Sparkles, Trash2, ChevronDown, ChevronUp, Target, TrendingUp, Zap, Star, Clock, Award, ArrowRight } from 'lucide-react';
+import { Plus, Loader2, AlertTriangle, CheckCircle, Lock, Circle, GraduationCap, FileText, Globe, Code, BookMarked, ChevronLeft, Sparkles, Trash2, Target, TrendingUp, Zap, Star, Clock, ArrowRight, Search, SlidersHorizontal, LayoutGrid, List, Flame, Trophy, BarChart3 } from 'lucide-react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 import Button from '../core/Button';
@@ -480,6 +480,11 @@ const StudyPlanPage = ({ handleNewChat }) => {
     const [showCreatePlanModal, setShowCreatePlanModal] = useState(false);
     const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
     const [planToDelete, setPlanToDelete] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [sortBy, setSortBy] = useState('recent');
+    const [focusMode, setFocusMode] = useState(false);
+    const [listMode, setListMode] = useState('grid');
 
     const handleDeletePlan = async () => {
         if (!planToDelete) return;
@@ -515,6 +520,77 @@ const StudyPlanPage = ({ handleNewChat }) => {
 
     useEffect(() => { fetchPaths(); }, [fetchPaths]);
 
+    const getPlanMeta = useCallback((path) => {
+        const modules = Array.isArray(path?.modules) ? path.modules : [];
+        const totalCount = modules.length;
+        const completedCount = modules.filter(m => m.status === 'completed').length;
+        const inProgressCount = modules.filter(m => m.status === 'in_progress').length;
+        const progressPercentage = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+        const isCompleted = totalCount > 0 && completedCount === totalCount;
+        const hasStarted = !isCompleted && modules.some(m => m.status !== 'not_started' && m.status !== 'locked');
+        const nextUp = modules.find(m => m.status === 'not_started' || m.status === 'in_progress');
+
+        return {
+            totalCount,
+            completedCount,
+            inProgressCount,
+            progressPercentage,
+            isCompleted,
+            hasStarted,
+            nextUp,
+        };
+    }, []);
+
+    const filteredAndSortedPaths = useMemo(() => {
+        let items = [...learningPaths];
+
+        const normalizedSearch = searchQuery.trim().toLowerCase();
+        if (normalizedSearch) {
+            items = items.filter((path) => {
+                const title = String(path.title || '').toLowerCase();
+                const moduleText = (path.modules || [])
+                    .map((m) => `${m.title || ''} ${m.objective || ''}`.toLowerCase())
+                    .join(' ');
+                return title.includes(normalizedSearch) || moduleText.includes(normalizedSearch);
+            });
+        }
+
+        if (statusFilter !== 'all') {
+            items = items.filter((path) => {
+                const meta = getPlanMeta(path);
+                if (statusFilter === 'completed') return meta.isCompleted;
+                if (statusFilter === 'in_progress') return meta.hasStarted && !meta.isCompleted;
+                if (statusFilter === 'not_started') return !meta.hasStarted && !meta.isCompleted;
+                return true;
+            });
+        }
+
+        items.sort((a, b) => {
+            const aMeta = getPlanMeta(a);
+            const bMeta = getPlanMeta(b);
+            if (sortBy === 'progress_desc') return bMeta.progressPercentage - aMeta.progressPercentage;
+            if (sortBy === 'progress_asc') return aMeta.progressPercentage - bMeta.progressPercentage;
+            if (sortBy === 'title_asc') return String(a.title || '').localeCompare(String(b.title || ''));
+            return new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0);
+        });
+
+        return items;
+    }, [learningPaths, searchQuery, statusFilter, sortBy, getPlanMeta]);
+
+    const dashboardStats = useMemo(() => {
+        const totalPlans = learningPaths.length;
+        const totalModules = learningPaths.reduce((sum, p) => sum + (p.modules?.length || 0), 0);
+        const totalCompleted = learningPaths.reduce((sum, p) => sum + (p.modules?.filter(m => m.status === 'completed').length || 0), 0);
+        const activePlans = learningPaths.filter((p) => {
+            const meta = getPlanMeta(p);
+            return meta.hasStarted && !meta.isCompleted;
+        }).length;
+        const completedPlans = learningPaths.filter((p) => getPlanMeta(p).isCompleted).length;
+        const avgProgress = totalModules > 0 ? Math.round((totalCompleted / totalModules) * 100) : 0;
+
+        return { totalPlans, activePlans, completedPlans, avgProgress };
+    }, [learningPaths, getPlanMeta]);
+
     const handleLocalModuleUpdate = useCallback((moduleId, newStatus) => {
         setSelectedStudyPlan(currentPlan => {
             if (!currentPlan) return null;
@@ -544,6 +620,11 @@ const StudyPlanPage = ({ handleNewChat }) => {
         const completedCount = plan.modules.filter(m => m.status === 'completed').length;
         const totalCount = plan.modules.length;
         const progressPercentage = (completedCount / totalCount) * 100;
+        const inProgressCount = plan.modules.filter(m => m.status === 'in_progress').length;
+        const unlockedCount = plan.modules.filter(m => m.status !== 'locked').length;
+        const modulesToRender = focusMode
+            ? plan.modules.filter((m) => m.status === 'in_progress' || (nextUpModule && m.moduleId === nextUpModule.moduleId))
+            : plan.modules;
 
         return (
             <motion.div
@@ -606,9 +687,7 @@ const StudyPlanPage = ({ handleNewChat }) => {
                                 <Zap size={18} />
                                 <span className="text-sm font-semibold">Active</span>
                             </div>
-                            <div className="text-2xl font-black text-black dark:text-white">
-                                {plan.modules.filter(m => m.status === 'in_progress').length}
-                            </div>
+                            <div className="text-2xl font-black text-black dark:text-white">{inProgressCount}</div>
                         </div>
                         <div className="bg-white/60 dark:bg-black/60 backdrop-blur-sm rounded-xl p-4 border border-black dark:border-white">
                             <div className="flex items-center gap-2 text-gray-500 mb-1">
@@ -618,15 +697,44 @@ const StudyPlanPage = ({ handleNewChat }) => {
                             <div className="text-2xl font-black text-black dark:text-white">{totalCount - completedCount}</div>
                         </div>
                     </div>
+
+                    <div className="mt-6 rounded-2xl border border-black dark:border-white bg-white/70 dark:bg-black/70 p-4">
+                        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                            <div>
+                                <p className="text-sm font-semibold text-black dark:text-white">Plan Insights</p>
+                                <p className="text-xs text-gray-600 dark:text-gray-400">Your current pace and recommended next action</p>
+                            </div>
+                            <button
+                                onClick={() => setFocusMode((prev) => !prev)}
+                                className="px-3 py-2 rounded-lg border border-black dark:border-white text-xs font-semibold hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
+                            >
+                                {focusMode ? 'Show Full Plan' : 'Focus on Next Steps'}
+                            </button>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div className="rounded-xl border border-black dark:border-white p-3">
+                                <p className="text-xs text-gray-500">Unlocked Modules</p>
+                                <p className="text-lg font-bold text-black dark:text-white">{unlockedCount}/{totalCount}</p>
+                            </div>
+                            <div className="rounded-xl border border-black dark:border-white p-3">
+                                <p className="text-xs text-gray-500">Momentum</p>
+                                <p className="text-lg font-bold text-black dark:text-white">{inProgressCount > 0 ? 'Strong' : 'Ready to Start'}</p>
+                            </div>
+                            <div className="rounded-xl border border-black dark:border-white p-3">
+                                <p className="text-xs text-gray-500">Next Up</p>
+                                <p className="text-sm font-bold text-black dark:text-white line-clamp-2">{nextUpModule?.title || 'Plan completed'}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Modules List */}
                 <div className="space-y-4">
                     <h3 className="text-xl font-bold text-black dark:text-white flex items-center gap-2">
                         <Target size={24} className="text-black dark:text-white" />
-                        Learning Modules
+                        Learning Modules {focusMode ? '(Focused View)' : ''}
                     </h3>
-                    {plan.modules.map((module, index) => (
+                    {modulesToRender.map((module) => (
                         <ModuleItem
                             key={module.moduleId}
                             module={module}
@@ -699,6 +807,27 @@ const StudyPlanPage = ({ handleNewChat }) => {
             {/* Main Content */}
             <main className="flex-1 overflow-y-auto custom-scrollbar">
                 <div className="max-w-7xl mx-auto p-6">
+                    {!selectedStudyPlan && !isLoading && !error && (
+                        <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                            <div className="rounded-2xl border-2 border-black dark:border-white p-4 bg-white dark:bg-black shadow-sm">
+                                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-sm"><BarChart3 size={16} /> Total Plans</div>
+                                <p className="text-2xl font-bold text-black dark:text-white mt-1">{dashboardStats.totalPlans}</p>
+                            </div>
+                            <div className="rounded-2xl border-2 border-black dark:border-white p-4 bg-white dark:bg-black shadow-sm">
+                                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-sm"><Flame size={16} /> Active Plans</div>
+                                <p className="text-2xl font-bold text-black dark:text-white mt-1">{dashboardStats.activePlans}</p>
+                            </div>
+                            <div className="rounded-2xl border-2 border-black dark:border-white p-4 bg-white dark:bg-black shadow-sm">
+                                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-sm"><Trophy size={16} /> Completed Plans</div>
+                                <p className="text-2xl font-bold text-black dark:text-white mt-1">{dashboardStats.completedPlans}</p>
+                            </div>
+                            <div className="rounded-2xl border-2 border-black dark:border-white p-4 bg-white dark:bg-black shadow-sm">
+                                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-sm"><TrendingUp size={16} /> Avg Progress</div>
+                                <p className="text-2xl font-bold text-black dark:text-white mt-1">{dashboardStats.avgProgress}%</p>
+                            </div>
+                        </div>
+                    )}
+
                     {isLoading && (
                         <motion.div
                             initial={{ opacity: 0 }}
@@ -777,13 +906,71 @@ const StudyPlanPage = ({ handleNewChat }) => {
                                 )}
 
                                 {!isLoading && !error && learningPaths.length > 0 && (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {learningPaths.map((path, index) => {
-                                            const isCompleted = path.modules.every(m => m.status === 'completed');
-                                            const hasStarted = !isCompleted && path.modules.some(m => m.status !== 'not_started' && m.status !== 'locked');
-                                            const completedCount = path.modules.filter(m => m.status === 'completed').length;
-                                            const totalCount = path.modules.length;
-                                            const progressPercentage = (completedCount / totalCount) * 100;
+                                    <>
+                                        <div className="mb-6 p-4 rounded-2xl border border-black dark:border-white bg-white/70 dark:bg-black/70">
+                                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
+                                                <div className="lg:col-span-5 relative">
+                                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                                    <input
+                                                        value={searchQuery}
+                                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                                        placeholder="Search plans, modules, or goals..."
+                                                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-black dark:border-white bg-white dark:bg-black text-black dark:text-white"
+                                                    />
+                                                </div>
+                                                <div className="lg:col-span-3 flex items-center gap-2">
+                                                    <SlidersHorizontal size={16} className="text-gray-500" />
+                                                    <select
+                                                        value={statusFilter}
+                                                        onChange={(e) => setStatusFilter(e.target.value)}
+                                                        className="w-full px-3 py-2.5 rounded-xl border border-black dark:border-white bg-white dark:bg-black text-black dark:text-white"
+                                                    >
+                                                        <option value="all">All status</option>
+                                                        <option value="in_progress">In progress</option>
+                                                        <option value="not_started">Not started</option>
+                                                        <option value="completed">Completed</option>
+                                                    </select>
+                                                </div>
+                                                <div className="lg:col-span-3">
+                                                    <select
+                                                        value={sortBy}
+                                                        onChange={(e) => setSortBy(e.target.value)}
+                                                        className="w-full px-3 py-2.5 rounded-xl border border-black dark:border-white bg-white dark:bg-black text-black dark:text-white"
+                                                    >
+                                                        <option value="recent">Recently updated</option>
+                                                        <option value="progress_desc">Highest progress</option>
+                                                        <option value="progress_asc">Lowest progress</option>
+                                                        <option value="title_asc">Title A-Z</option>
+                                                    </select>
+                                                </div>
+                                                <div className="lg:col-span-1 flex gap-2">
+                                                    <button
+                                                        onClick={() => setListMode('grid')}
+                                                        className={`flex-1 rounded-xl border px-2 py-2 ${listMode === 'grid' ? 'border-black dark:border-white bg-black text-white dark:bg-white dark:text-black' : 'border-black dark:border-white text-black dark:text-white'}`}
+                                                        title="Grid view"
+                                                    >
+                                                        <LayoutGrid size={16} className="mx-auto" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setListMode('list')}
+                                                        className={`flex-1 rounded-xl border px-2 py-2 ${listMode === 'list' ? 'border-black dark:border-white bg-black text-white dark:bg-white dark:text-black' : 'border-black dark:border-white text-black dark:text-white'}`}
+                                                        title="List view"
+                                                    >
+                                                        <List size={16} className="mx-auto" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {filteredAndSortedPaths.length === 0 ? (
+                                            <div className="rounded-2xl border-2 border-dashed border-black dark:border-white p-10 text-center bg-white/70 dark:bg-black/70">
+                                                <p className="text-lg font-semibold text-black dark:text-white">No plans match your filters</p>
+                                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">Try changing search, status, or sort options.</p>
+                                            </div>
+                                        ) : (
+                                            <div className={listMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
+                                        {filteredAndSortedPaths.map((path, index) => {
+                                            const { isCompleted, hasStarted, completedCount, totalCount, progressPercentage } = getPlanMeta(path);
 
                                             return (
                                                 <motion.div
@@ -793,7 +980,7 @@ const StudyPlanPage = ({ handleNewChat }) => {
                                                     transition={{ delay: index * 0.1 }}
                                                     whileHover={{ y: -8, scale: 1.02 }}
                                                     onClick={() => setSelectedStudyPlan(path)}
-                                                    className="group cursor-pointer bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden border-2 border-purple-200/50 dark:border-purple-700/50 hover:border-purple-400 dark:hover:border-purple-500 hover:shadow-2xl hover:shadow-purple-300/50 dark:hover:shadow-purple-700/50 transition-all duration-300"
+                                                    className={`group cursor-pointer bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden border-2 border-purple-200/50 dark:border-purple-700/50 hover:border-purple-400 dark:hover:border-purple-500 hover:shadow-2xl hover:shadow-purple-300/50 dark:hover:shadow-purple-700/50 transition-all duration-300 ${listMode === 'list' ? 'flex items-stretch' : ''}`}
                                                 >
                                                     {/* Card Header */}
                                                     <div className={`p-6 bg-gradient-to-br ${isCompleted
@@ -801,7 +988,7 @@ const StudyPlanPage = ({ handleNewChat }) => {
                                                         : hasStarted
                                                             ? 'from-purple-500 via-pink-500 to-violet-600'
                                                             : 'from-gray-400 to-gray-500'
-                                                        }`}>
+                                                        } ${listMode === 'list' ? 'w-72 flex-shrink-0' : ''}`}>
                                                         <div className="flex items-start justify-between mb-4">
                                                             <div className="flex-1">
                                                                 <h3 className="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:scale-105 transition-transform">
@@ -840,7 +1027,7 @@ const StudyPlanPage = ({ handleNewChat }) => {
                                                     </div>
 
                                                     {/* Card Body */}
-                                                    <div className="p-6">
+                                                    <div className={`p-6 ${listMode === 'list' ? 'flex-1 flex items-center justify-between' : ''}`}>
                                                         <div className="flex items-center justify-between">
                                                             <div className="flex items-center gap-2">
                                                                 {isCompleted ? (
@@ -866,7 +1053,9 @@ const StudyPlanPage = ({ handleNewChat }) => {
                                                 </motion.div>
                                             );
                                         })}
-                                    </div>
+                                            </div>
+                                        )}
+                                    </>
                                 )}
                             </motion.div>
                         )}

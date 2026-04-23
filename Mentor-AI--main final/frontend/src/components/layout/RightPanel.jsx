@@ -41,12 +41,12 @@ function RightPanel({ isChatProcessing }) {
                 
                 <div className="flex-grow space-y-4 overflow-y-auto custom-scrollbar pr-1 pt-4">
                     {/* --- THIS IS THE NEW BUTTON TO LAUNCH THE MODAL --- */}
-                    <div className="card-base p-3">
+                    <div className="card-base p-3 border border-gray-400 dark:border-gray-600">
                          <div className="flex items-center gap-2 text-sm font-medium mb-2">
                             <Share2 size={16} className="text-primary dark:text-primary-light" />
                             <span>Live Concept Map</span>
                         </div>
-                        <p className="text-xs text-text-muted-light dark:text-text-muted-dark mb-3">
+                        <p className="text-xs text-text-light dark:text-text-dark mb-3">
                             Visualize concepts from your current conversation in real-time.
                         </p>
                         <Button onClick={() => setIsLiveKgModalOpen(true)} variant="primary" size="sm" fullWidth leftIcon={<Share2 size={16} />}>
@@ -54,17 +54,17 @@ function RightPanel({ isChatProcessing }) {
                         </Button>
                     </div>
 
-                    <div className="card-base p-3 border border-border-light dark:border-border-dark">
+                    <div className="card-base p-3 border border-gray-400 dark:border-gray-600">
                         <div className="flex items-center gap-2 text-sm font-medium mb-2">
                             <CalendarClock size={16} className="text-primary dark:text-primary-light" />
-                            <span>Personal Timetable</span>
+                            <span className="text-text-light dark:text-text-dark">Personal Timetable</span>
                         </div>
-                        <p className="text-xs text-text-muted-light dark:text-text-muted-dark mb-3">
+                        <p className="text-xs text-text-light dark:text-text-dark mb-3">
                             Build a focused learning timetable around your goal, available hours, and energy windows.
                         </p>
                         <Button
                             onClick={() => navigate('/timetable')}
-                            variant="outline"
+                            variant="primary"
                             size="sm"
                             fullWidth
                             rightIcon={<ArrowRight size={16} />}
@@ -77,7 +77,7 @@ function RightPanel({ isChatProcessing }) {
                     {currentSelectedDocFilename ? (
                         <>
                             <div>
-                                <button onClick={() => setIsAnalyzerOpen(!isAnalyzerOpen)} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-left bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md focus:outline-none shadow-sm border border-border-light dark:border-border-dark">
+                                <button onClick={() => setIsAnalyzerOpen(!isAnalyzerOpen)} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-left bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md focus:outline-none shadow-sm border border-gray-400 dark:border-gray-600">
                                     <span className="flex items-center gap-2"><Telescope size={16} /> Document Analysis</span>
                                     {isAnalyzerOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                                 </button>
@@ -90,7 +90,7 @@ function RightPanel({ isChatProcessing }) {
                                 )}
                             </div>
                             <div>
-                                <div className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-left bg-gray-50 dark:bg-gray-800 rounded-md border border-border-light dark:border-border-dark">
+                                <div className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-left bg-gray-50 dark:bg-gray-800 rounded-md border border-gray-400 dark:border-gray-600">
                                    <span className="flex items-center gap-2"><Radio size={16} /> Content Exporters</span>
                                 </div>
                                  <div className="mt-2 space-y-3">
@@ -100,7 +100,7 @@ function RightPanel({ isChatProcessing }) {
                             </div>
                         </>
                     ) : (
-                         <div className="p-4 mt-4 text-xs text-center text-text-muted-light dark:text-text-muted-dark bg-gray-50 dark:bg-gray-800 rounded-md border border-dashed border-border-light dark:border-border-dark">
+                         <div className="p-4 mt-4 text-xs text-center text-text-muted-light dark:text-text-muted-dark bg-gray-50 dark:bg-gray-800 rounded-md border border-dashed border-gray-400 dark:border-gray-600">
                             <p>Select a document from the left panel to enable static analysis tools.</p>
                         </div>
                     )}

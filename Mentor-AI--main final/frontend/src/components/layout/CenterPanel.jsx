@@ -31,7 +31,50 @@ import {
     History
 } from 'lucide-react';
 
-const features = [];
+const features = [
+    {
+        title: 'Smart Doubt Resolver',
+        description: 'Break down tough questions with guided explanations and quick checks.',
+        icon: FileQuestion,
+        path: '/doubt-resolver',
+        glowColor: 'blue',
+    },
+    {
+        title: 'Smart Practice Mode',
+        description: 'Generate adaptive quiz practice from your current learning level.',
+        icon: Target,
+        path: '/prep-mode',
+        glowColor: 'purple',
+    },
+    {
+        title: 'AI Smart Summarizer',
+        description: 'Summarize text, files, and URLs into clean notes instantly.',
+        icon: Sparkles,
+        path: '/summarizer',
+        glowColor: 'green',
+    },
+    {
+        title: 'Focus Tracker',
+        description: 'Stay in deep work with timer sessions, streaks, and momentum.',
+        icon: Swords,
+        path: '/focus',
+        glowColor: 'orange',
+    },
+    {
+        title: 'Smart Notepad',
+        description: 'Capture and organize your study notes in one workspace.',
+        icon: BookMarked,
+        path: '/notepad',
+        glowColor: 'cyan',
+    },
+    {
+        title: 'AI Timetable Planner',
+        description: 'Build a balanced plan based on your goals and available time.',
+        icon: MapPin,
+        path: '/timetable',
+        glowColor: 'yellow',
+    },
+];
 
 const glowStyles = {
     blue: "hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-[0_0_20px_theme(colors.blue.500/40%)]",

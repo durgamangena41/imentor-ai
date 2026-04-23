@@ -28,6 +28,7 @@ import {
   FileText,
   Pencil,
   Save,
+  Check,
 } from 'lucide-react';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:2000/api';
@@ -986,11 +987,22 @@ export default function NotepadPage() {
                     <p className="text-sm md:text-base font-semibold text-slate-700">{date.getDate()}</p>
                     <div className="mt-2 flex flex-wrap gap-1">
                       {dayTasks.slice(0, 4).map((task) => (
-                        <span
-                          key={task._id}
-                          className="h-2 w-2 rounded-full"
-                          style={{ backgroundColor: PRIORITY_META[task.priority]?.dot || '#94a3b8' }}
-                        />
+                        task.completed ? (
+                          <span
+                            key={task._id}
+                            className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 text-white shadow-sm"
+                            title={`${task.title} completed`}
+                          >
+                            <Check size={9} strokeWidth={3} />
+                          </span>
+                        ) : (
+                          <span
+                            key={task._id}
+                            className="h-2 w-2 rounded-full"
+                            style={{ backgroundColor: PRIORITY_META[task.priority]?.dot || '#94a3b8' }}
+                            title={task.title}
+                          />
+                        )
                       ))}
                     </div>
                   </button>

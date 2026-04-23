@@ -8,6 +8,7 @@ const {
     generateLevelQuestions,
     updateLevelProgress
 } = require('../services/skillTreeGameService');
+const badgeService = require('../services/badgeService');
 const User = require('../models/User'); // Used to populate user details in leaderboard
 const TestResult = require('../models/TestResult');
 const { auditLog } = require('../utils/logger');
@@ -230,6 +231,61 @@ router.get('/reports', async (req, res) => {
     } catch (error) {
         console.error('Error fetching reports:', error);
         res.status(500).json({ message: 'Server error fetching reports.' });
+    }
+});
+
+// @route   GET /api/gamification/badges
+// @desc    Get user's earned badges with details
+router.get('/badges', async (req, res) => {
+    try {
+        await badgeService.checkAndAwardBadges(req.user._id);
+        const badges = await badgeService.getUserBadges(req.user._id);
+        res.json({ badges });
+    } catch (error) {
+        console.error('Error fetching earned badges:', error);
+        res.status(500).json({ message: 'Server error fetching earned badges.' });
+    }
+});
+
+// @route   GET /api/gamification/badges/all
+// @desc    Get full badge collection (earned + locked) with progress data
+router.get('/badges/all', async (req, res) => {
+    try {
+        const { filter = 'all', category = 'all', sortBy = 'progress' } = req.query;
+
+        await badgeService.checkAndAwardBadges(req.user._id);
+        const collection = await badgeService.getBadgeCollection(req.user._id, {
+            filter,
+            category,
+            sortBy
+        });
+
+        res.json(collection);
+    } catch (error) {
+        console.error('Error fetching full badge collection:', error);
+        res.status(500).json({ message: 'Server error fetching badge collection.' });
+    }
+});
+
+// @route   GET /api/gamification/badges/summary
+// @desc    Get compact badge summary and near-unlock hints
+router.get('/badges/summary', async (req, res) => {
+    try {
+        await badgeService.checkAndAwardBadges(req.user._id);
+        const collection = await badgeService.getBadgeCollection(req.user._id, {
+            filter: 'all',
+            category: 'all',
+            sortBy: 'progress'
+        });
+
+        res.json({
+            summary: collection.summary,
+            nextUnlocks: collection.nextUnlocks,
+            recentEarned: collection.earnedBadges
+        });
+    } catch (error) {
+        console.error('Error fetching badge summary:', error);
+        res.status(500).json({ message: 'Server error fetching badge summary.' });
     }
 });
 

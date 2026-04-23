@@ -2,6 +2,7 @@
 // REFACTORED to use @google/generative-ai (Official Node.js SDK) correctly
 require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { runWithGeminiKeyRotation } = require('./geminiKeyRotationService');
 
 const GEMINI_MODEL = "gemini-2.0-flash";
 const FALLBACK_API_KEY = process.env.GEMINI_API_KEY;
@@ -26,23 +27,12 @@ async function generateContentWithHistory(
 ) {
     const apiKeyToUse = options.apiKey || FALLBACK_API_KEY;
 
-    if (!apiKeyToUse) {
+    if (!apiKeyToUse && !options.apiKey) {
         console.error("FATAL ERROR: Gemini API key is not available.");
         throw new Error("Gemini API key is missing.");
     }
 
     try {
-        // Initialize @google/generative-ai SDK
-        const genAI = new GoogleGenerativeAI(apiKeyToUse);
-
-        // Get the model
-        const modelToUse = options.model || MODEL_NAME;
-        const model = genAI.getGenerativeModel({
-            model: modelToUse,
-            systemInstruction: systemPromptText ? { parts: [{ text: systemPromptText }] } : undefined,
-            safetySettings: baseSafetySettings
-        });
-
         if (typeof currentUserQuery !== 'string' || currentUserQuery.trim() === '') {
             throw new Error("currentUserQuery must be a non-empty string.");
         }
@@ -62,18 +52,31 @@ async function generateContentWithHistory(
             parts: [{ text: currentUserQuery }]
         });
 
+        const modelToUse = options.model || MODEL_NAME;
         console.log(`Sending to ${modelToUse}. Turns: ${contents.length}.`);
 
-        // Generate content
         const generationConfig = {
             temperature: 0.7,
             maxOutputTokens: options.maxOutputTokens || DEFAULT_MAX_OUTPUT_TOKENS_CHAT,
         };
 
-        const result = await model.generateContent({
-            contents,
-            generationConfig
-        });
+        const executeRequest = async (activeApiKey) => {
+            const genAI = new GoogleGenerativeAI(activeApiKey);
+            const model = genAI.getGenerativeModel({
+                model: modelToUse,
+                systemInstruction: systemPromptText ? { parts: [{ text: systemPromptText }] } : undefined,
+                safetySettings: baseSafetySettings
+            });
+
+            return model.generateContent({
+                contents,
+                generationConfig
+            });
+        };
+
+        const result = options.apiKey
+            ? await executeRequest(apiKeyToUse)
+            : await runWithGeminiKeyRotation(executeRequest);
 
         const response = await result.response;
         const text = response.text();
@@ -97,7 +100,13 @@ async function generateContentWithHistory(
 
         // --- QUOTA FAILOVER FIX ---
         // Specifically flag 429 (Too Many Requests) for the router to handle failover
-        const isQuotaError = error.status === 429 || error.message?.includes("429") || error.message?.includes("quota");
+        const lowerMessage = String(error?.message || '').toLowerCase();
+        const isQuotaError = error.status === 429
+            || lowerMessage.includes('429')
+            || lowerMessage.includes('quota')
+            || lowerMessage.includes('all gemini keys are currently unavailable')
+            || lowerMessage.includes('all gemini keys are currently at rpm limit')
+            || lowerMessage.includes('all gemini keys reached daily limit');
 
         const enhancedError = new Error(clientMessage);
         enhancedError.status = error.status || 500;

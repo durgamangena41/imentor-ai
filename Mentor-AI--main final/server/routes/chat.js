@@ -55,6 +55,17 @@ function doesQuerySuggestRecall(query) {
     return recallKeywords.some(keyword => lowerCaseQuery.includes(keyword));
 }
 
+function parseBooleanFlag(value) {
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'number') return value === 1;
+    if (typeof value === 'string') {
+        const normalized = value.trim().toLowerCase();
+        if (['true', '1', 'yes', 'on'].includes(normalized)) return true;
+        if (['false', '0', 'no', 'off', ''].includes(normalized)) return false;
+    }
+    return false;
+}
+
 
 
 router.post('/message', injectContextualMemory, async (req, res) => {
@@ -65,7 +76,9 @@ router.post('/message', injectContextualMemory, async (req, res) => {
     } = req.body;
 
     // Robust Tutor Mode detection
-    let tutorMode = req.body.tutorMode || req.body.isTutorMode || req.body.tutor_mode;
+    let tutorMode = parseBooleanFlag(req.body.tutorMode)
+        || parseBooleanFlag(req.body.isTutorMode)
+        || parseBooleanFlag(req.body.tutor_mode);
 
     // Auto-enable logic
     if (query) {

@@ -62,6 +62,53 @@ function getLLMService(llmConfig) {
     return { llmService, llmOptions };
 }
 
+function buildTutorFallbackIntro(topic) {
+    const normalizedTopic = String(topic || 'this topic').trim();
+    const key = normalizedTopic.toLowerCase();
+
+    if (key.includes('neural network')) {
+        return [
+            'Neural networks are machine-learning models inspired by brain-like connections.',
+            'They learn patterns by passing input through layers of weighted nodes and adjusting those weights using training data.',
+            'In simple terms: input -> hidden layers extract features -> output predicts a class/value.',
+            '',
+            'Quick check: Why do hidden layers matter in a neural network?'
+        ].join('\n');
+    }
+
+    if (key.includes('machine learning')) {
+        return [
+            'Machine learning is a branch of AI where systems learn from data instead of being explicitly programmed for every rule.',
+            'The model finds patterns in training examples, then uses those patterns to make predictions on new data.',
+            'Common types are supervised learning, unsupervised learning, and reinforcement learning.',
+            '',
+            'Quick check: What is the difference between training data and test data?'
+        ].join('\n');
+    }
+
+    if (key.includes('ai') || key.includes('artificial intelligence')) {
+        return [
+            'Artificial Intelligence (AI) is the field of building systems that perform tasks requiring human-like intelligence.',
+            'Examples include language understanding, decision-making, recommendations, and computer vision.',
+            'Machine learning is one of the main techniques used to build modern AI systems.',
+            '',
+            'Quick check: Can you name one AI task that does not require robotics?'
+        ].join('\n');
+    }
+
+    return [
+        `${normalizedTopic} can be understood as a concept with three parts: what it is, how it works, and where it is used.`,
+        `Start with the definition, then understand the mechanism, then learn one practical example of ${normalizedTopic}.`,
+        '',
+        `Quick check: How would you explain ${normalizedTopic} in one sentence?`
+    ].join('\n');
+}
+
+async function getTopicContext() {
+    // Graceful no-op context provider for tutor mode when external context service is unavailable.
+    return null;
+}
+
 /**
  * Generate initial response for a topic
  */
@@ -80,7 +127,7 @@ async function startSocraticSession(topic, context, llmConfig) {
         return response.trim();
     } catch (error) {
         console.error('[SocraticTutor] Start session error:', error);
-        return `Let's dive into ${topic}! It's a fascinating subject. In simple terms, it is about understanding the core idea clearly before going deeper.`;
+        return buildTutorFallbackIntro(topic);
     }
 }
 
@@ -225,6 +272,7 @@ module.exports = {
     getTutorSessionState,
     setTutorSessionState,
     clearTutorSessionState,
+    getTopicContext,
     UNDERSTANDING_LEVELS,
     PEDAGOGICAL_MOVES,
     SOCRATIC_STATES

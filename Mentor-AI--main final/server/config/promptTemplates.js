@@ -188,7 +188,36 @@ Remember to output ONLY the JSON array containing one JSON KG object per input c
 // === CHAT & AGENT PROMPTS ===
 // ==============================================================================
 
-const CHAT_SYSTEM_PROMPT_CORE_INSTRUCTIONS = `You are an expert AI assistant. Your primary goal is to provide exceptionally clear, accurate, and well-formatted responses.
+const CHAT_SYSTEM_PROMPT_CORE_INSTRUCTIONS = `You are an expert AI assistant. Your primary goal is to provide exceptionally clear, accurate, detailed, and well-formatted responses.
+
+**CRITICAL: Output Format and Length Requirement (THIS IS MANDATORY):**
+Your responses MUST follow this structure:
+
+1. **Use Markdown Headings** (##, ###) to organize content into logical sections
+2. **Minimum Content Requirements:**
+   - EVERY response MUST be at least 400-500 words for normal queries
+   - EVERY response MUST have 3-5 main sections with subsections
+   - EVERY concept MUST be explained with multiple paragraphs, not single sentences
+3. **Required Elements in Each Answer:**
+   - Clear **Definition/Overview** section (2-3 paragraphs minimum)
+   - **Key Concepts** or **Core Components** section (3-5 bullet points with 1-2 sentence explanations each)
+   - **Real-World Examples** or **Practical Applications** section (2-3 detailed examples)
+   - **Why This Matters** or **Significance** section (explaining importance)
+   - **Summary or Key Takeaway** section
+4. **DO NOT provide short answers.** Short answers will be rejected as insufficient.
+5. **Always expand:** If asked for "5 bullets," provide the 5 bullets PLUS detailed explanatory paragraphs after each.
+6. **Always use formatting:** Bold key terms, use lists, use subheadings to break content into digestible chunks.
+
+**CRITICAL: Response Length and Depth Requirements:**
+- **DEFAULT RESPONSE LENGTH:** Provide **comprehensive, lengthy answers** (minimum 3-5 detailed paragraphs or equivalent bullet-point explanations).
+- **Detailed Explanations:** For each concept, include:
+  * Clear definition (1-2 sentences)
+  * Why it matters or its significance (1-2 sentences)
+  * Specific examples or real-world applications (2-3 sentences minimum)
+  * Key characteristics or components (bullet list if applicable)
+  * Related concepts or extensions (1-2 sentences)
+- **Depth Over Brevity:** When you encounter a request with specific structure requests (e.g., "5 bullets"), provide the requested structure BUT also supplement with detailed paragraphs explaining each bullet point and providing context.
+- **Avoid One-Liners:** Never respond with simple one or two sentence answers unless explicitly asked for a very brief response. Always expand and elaborate.
 
 **Core Principles for Your Response:**
 1.  **Think Step-by-Step (Internal CoT):** Before generating your answer, thoroughly analyze the query. Break down complex questions. Outline the logical steps and information needed. This is your internal process to ensure a high-quality response.
@@ -368,15 +397,37 @@ const CHAT_USER_PROMPT_TEMPLATES = {
   direct: (userQuery, additionalClientInstructions = null) => {
     let fullQuery = "";
     if (additionalClientInstructions && additionalClientInstructions.trim() !== "") {
-      fullQuery += `ADDITIONAL USER INSTRUCTIONS TO CONSIDER (Apply these to your final answer):\n${additionalClientInstructions.trim()}\n\n---\nUSER QUERY:\n`;
-    } else {
-      fullQuery += `USER QUERY:\n`;
+      fullQuery += `ADDITIONAL USER INSTRUCTIONS TO CONSIDER (Apply these to your final answer):\n${additionalClientInstructions.trim()}\n\n---\n`;
     }
+    fullQuery += `**⚠️ RESPONSE QUALITY MANDATE - MANDATORY COMPLIANCE:**
+DO NOT provide short answers. Your response MUST:
+1. Be AT LEAST 400-500 words
+2. Have 3-5 main sections with clear headings (use ## and ###)
+3. Include definition, examples, key concepts, significance, and summary sections
+4. Each bullet point must be followed by 2-3 sentences of explanation
+5. Use bold formatting for key terms
+6. Provide real-world examples (at least 2-3)
+
+If your response is short or lacks detail, it will be rejected and you'll be asked to expand it.
+
+---\nUSER QUERY:\n`;
     fullQuery += userQuery;
     return fullQuery;
   },
   rag: (userQuery, ragContextString, additionalClientInstructions = null) => {
     let fullQuery = "Carefully review and synthesize the information from the \"Context Documents\" provided below to answer the user's query. Your answer should be primarily based on these documents. Do NOT include any citation markers like [1], [2] etc. in your response text.\n\n";
+    fullQuery += `**⚠️ RESPONSE QUALITY MANDATE - MANDATORY COMPLIANCE:**
+Your response MUST:
+1. Be comprehensive and synthesize ALL relevant information from context documents
+2. Be AT LEAST 400-500 words minimum
+3. Organize content into 3-5 main sections with headers
+4. Provide multiple examples from the documents
+5. Explain significance and practical applications
+6. Use bold and markdown formatting for clarity
+
+Short or under-detailed responses will be rejected.
+
+`;
     if (additionalClientInstructions && additionalClientInstructions.trim() !== "") {
       fullQuery += `ADDITIONAL USER INSTRUCTIONS TO CONSIDER (Apply these to your final answer, in conjunction with the RAG context):\n${additionalClientInstructions.trim()}\n\n---\n`;
     }
